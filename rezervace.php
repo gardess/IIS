@@ -7,27 +7,41 @@ if (isset($_POST['pridat_button']))
 }
 elseif (isset($_POST['upravit_button']))
 {
-	$_SESSION['value'] = $_POST['vyber'];
-	if ($_SESSION['value'] != "")
+	if (!isset($_POST['vyber']))
 	{
-		//$_SESSION['value'] = $_POST['vyber'];
-    	header('Location: rezervace_upravit.php');
-    }
-    else
-    {
-    	echo "Nevybra jsi žádnou rezervaci.";
+		echo "Nebyla vybrána žádná rezervace pro úpravu.";
+	}
+	else
+	{
+		$_SESSION['value'] = $_POST['vyber'];
+		if ($_SESSION['value'] != "")
+		{
+			//$_SESSION['value'] = $_POST['vyber'];
+	    	header('Location: rezervace_upravit.php');
+	    }
+	    else
+	    {
+	    	echo "Nevybra jsi žádnou rezervaci.";
+	    }
     }
 }
 elseif (isset($_POST['odebrat_button']))
 {
-    if(smazRezervaci($_POST['vyber'], $_SESSION['Rodne_cislo']))
-    {
-    	echo "Rezervace odebrána.<br>";
-    }
-	else
+	if (!isset($_POST['vyber']))
 	{
-        echo "Rezervaci se nepodařilo odebrat!<br>";
+		echo "Nebyla vybrána žádná rezervace pro smazání.";
 	}
+	else
+    {
+    	if(smazRezervaci($_POST['vyber'], $_SESSION['Rodne_cislo']))
+        {
+        	echo "Rezervace odebrána.<br>";
+        }
+    	else
+    	{
+            echo "Rezervaci se nepodařilo odebrat!<br>";
+    	}
+    }
 }
 else
 {
