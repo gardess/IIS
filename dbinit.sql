@@ -52,15 +52,18 @@ CREATE TABLE ap_predmet (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE rezervace (
+    ID INTEGER NOT NULL AUTO_INCREMENT,
+    Datum_pridani DATE NOT NULL,
+    Cas_pridani VARCHAR(10) NOT NULL,
     Oznaceni VARCHAR(4) NOT NULL,
     Rodne_cislo INTEGER NOT NULL,
     Zkratka VARCHAR(4) NOT NULL,
     Jednorazova VARCHAR(1) NOT NULL,
-    PRIMARY KEY (Oznaceni, Rodne_cislo, Zkratka),
+    PRIMARY KEY (ID, Oznaceni, Rodne_cislo, Zkratka),
     FOREIGN KEY (Oznaceni) REFERENCES ucebna(Oznaceni) ON DELETE CASCADE,
     FOREIGN KEY (Rodne_cislo) REFERENCES akademicky_pracovnik(Rodne_cislo) ON DELETE CASCADE,
     FOREIGN KEY (Zkratka) REFERENCES predmet(Zkratka) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci;   
+) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci;  
 
 
 INSERT INTO akademicky_pracovnik (Rodne_Cislo, Jmeno, Prijmeni, Login, Heslo) VALUES('9009213939', 'Al', 'Koholik', 'ap1', 'ap1');
@@ -82,7 +85,3 @@ INSERT INTO predmet (Zkratka, Nazev, Garant, Hodinova_dotace, Kredity) VALUES('I
 INSERT INTO ap_predmet (Rodne_cislo, Zkratka) VALUES('9009213939', 'IPZ');
 INSERT INTO ap_predmet (Rodne_cislo, Zkratka) VALUES('0123456789', 'ISA');
 INSERT INTO ap_predmet (Rodne_cislo, Zkratka) VALUES('1234567890', 'IMS');
-
-INSERT INTO rezervace (Oznaceni, Rodne_cislo, Zkratka, Jednorazova) VALUES('D105', '9009213939', 'IPZ', 'N');
-INSERT INTO rezervace (Oznaceni, Rodne_cislo, Zkratka, Jednorazova) VALUES('D105', '0123456789', 'ISA', 'A');
-INSERT INTO rezervace (Oznaceni, Rodne_cislo, Zkratka, Jednorazova) VALUES('D105', '1234567890', 'IMS', 'N');

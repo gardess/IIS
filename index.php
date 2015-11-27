@@ -9,8 +9,7 @@ if (!isset($_SESSION['logged']))
 <!-- Hlavní stránka - Výpis rozvrhu, který se zobrazuje všem -->
 
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
-     "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 	<head>
     	<title>Informační systém - Učebny</title>
@@ -34,19 +33,29 @@ if (!isset($_SESSION['logged']))
 		    
 		    if(mysql_num_rows($result) == 0)
 		    {
-		    	echo "Nenalezeny žádné záznamy!";
+		    	echo "<center><h3>Není zadána žádná rezervace!</h3></center>";
 		    	return false;
 		    }
 		    echo "<center><h2>Aktuální rezervace</h2>";
-		    echo "<table>";
-		    echo "<tr><td>Označení</td><td>Rodné číslo</td><td>Zkratka</td><td>Jednorazova</td></tr>";
+		    echo "<table border=\"1\">";
+		    echo "<tr><td>ID</td><td>Učebna</td><td>Jméno a příjmení</td><td>Zkratka</td><td>Jednorázová</td><td>Datum přidání</td><td>Čas přidání</td></tr>";
 		    while($record = MySQL_Fetch_Array($result))
 		    {
-		        $first = $record['Oznaceni'];
-		        $second = $record['Rodne_cislo'];
-		        $third = $record['Zkratka'];
-		        $fourth = $record['Jednorazova'];      
-		      	echo "<tr><td>$first</td><td>$second</td><td>$third</td><td>$fourth</td></tr>";
+		    	$aa = $record['ID'];
+		        $a = $record['Oznaceni'];
+
+		        $b = $record['Rodne_cislo'];
+		        $res = mysql_query("select Jmeno, Prijmeni from Akademicky_pracovnik where Rodne_cislo = $b");
+		        	while($rec = MySQL_Fetch_Array($res))
+		        	{
+		        		$ba = $rec['Jmeno'];
+		        		$bb = $rec['Prijmeni'];
+		        	}
+		        $c = $record['Zkratka'];
+		        $d = $record['Jednorazova'];
+		        $e = $record['Datum_pridani'];
+		        $f = $record['Cas_pridani'];      
+		      	echo "<tr><td>$aa</td><td>$a</td><td>$ba $bb</td><td>$c</td><td>$d</td><td>$e</td><td>$f</td></tr>";
 		    }
 		    echo "</table></center>";
 
