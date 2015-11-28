@@ -1,7 +1,8 @@
 <?php
+session_start();
    //include("config.php");
    include("database.php");
-   session_start();
+   
    $error = "";
    connectDB();
    if($_SERVER["REQUEST_METHOD"] == "POST")
@@ -11,15 +12,17 @@
       $myusername=mysql_real_escape_string($_POST['username']);
       $mypassword=mysql_real_escape_string($_POST['password']); 
       
-      $sql="SELECT * FROM akademicky_pracovnik WHERE login='$myusername' and heslo='$mypassword'";
+      $sql="SELECT * FROM akademicky_pracovnik WHERE Login='$myusername' and Heslo='$mypassword'";
       $result=mysql_query($sql);
       echo "result: " . $result;
       while($row = mysql_fetch_array($result))
       {
       	$_SESSION['Jmeno'] = $row['Jmeno'];
         $_SESSION['Prijmeni'] = $row['Prijmeni'];
+        $_SESSION['Rodne_cislo'] = $row['Rodne_cislo'];
         $_SESSION['Zarazeni'] = $row['Zarazeni'];	
       }
+      echo "TEST";
 
       $active=$row['active'];
       

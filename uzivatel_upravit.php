@@ -1,22 +1,29 @@
 <?php
 session_start();
+	if ($_SESSION['Zarazeni'] != "Administrator")
+	{
+		echo "Nemate dostatecna opravneni.";
+		exit;
+	}
+
 	include "database.php";
-	function upravRezervaci($ozn, $RC, $zkr, $jed, $datum, $cas, $DB_RC)
+	function upravRezervaci($jmeno, $prijmeni, $RC, $login, $heslo, $zarazeni, $DB_Zarazeni)
 	{
 		connectDB();
 		if (($DB_RC != $RC) && ($_SESSION['Zarazeni'] != "Administrator"))
 		{
-			echo "Nemáte dostatečná oprávnění pro úpravu této rezervace.";
+			echo "Nemáte dostatečná oprávnění pro úpravu uživatelů.";
 			return false;
 		}
 
     //$request = "insert into rezervace(Datum_pridani, Cas_pridani, Oznaceni, Rodne_cislo, Zkratka, Jednorazova) values('$datum','$cas','$ozn','$RC','$zkr','$jed')";
-		$sql = "UPDATE rezervace SET 
-		Datum_pridani='$datum',
-		Cas_pridani='$cas',
-		Oznaceni='$ozn',
-		Zkratka='$zkr',
-		Jednorazova='$jed'
+		$sql = "UPDATE akademicky_pracovnik SET 
+		Jmeno='$jmeno',
+		Prijmeni='$prijmeni',
+		Rodne_cislo='$RC',
+		Login='$login',
+		Heslo='$heslo',
+		Zarazeni='$zarazeni'
 		WHERE ID ='".$_SESSION['value']."' ";
 		if(!mysql_query($sql))
 		{
@@ -25,8 +32,13 @@ session_start();
 		}
 		else
 		{
+			if ($zarazeni != "Administrator")
+			{
+				$_SESSION['Zarazeni'] = "Akademicky pracovnik";
+				header('Location: index.php');
+			}
 			echo "Úprava proběhla úspěšně.";
-			header('Location: rezervace.php');
+			header('Location: spravauzivatelu.php');
 			return true;
 		}
 	}
@@ -67,14 +79,17 @@ session_start();
     
   	<?php
   		connectDB();
-  		$req = "SELECT * FROM rezervace WHERE ID ='".$_SESSION['value']."' ";
+  		$req = "SELECT * FROM akademicky_pracovnik WHERE ID ='".$_SESSION['value']."' ";
         $res = mysql_query($req);
         while($rec = MySQL_Fetch_Array($res))
     	{
-    	   	$DB_Oznaceni = $rec['Oznaceni'];
-    	   	$DB_Zkratka = $rec['Zkratka'];
-    	   	$DB_Jednorazova = $rec['Jednorazova'];
-    	   	$DB_RC = $rec['Rodne_cislo'];
+    		$DB_RC = $rec['Rodne_cislo'];
+    	   	$DB_Jmeno = $rec['Jmeno'];
+    	   	$DB_Prijmeni = $rec['Prijmeni'];
+    	   	$DB_Login = $rec['Login'];
+    	   	$DB_Heslo = $rec['Heslo'];
+    	   	$DB_Zarazeni = $rec['Zarazeni'];
+    	   	
     	}
     	
   	?>
@@ -84,7 +99,7 @@ session_start();
     $uzivatel = $_SESSION['Rodne_cislo'];
     if(isset($_POST['submit'])):
       
-        if(upravRezervaci($_POST['ucebna'], $_POST['RC'], $_POST['zkratka'], $_POST['jed'], $_POST['datum'], $_POST['cas'], $DB_RC))
+        if(upravRezervaci($_POST['jmeno'], $_POST['prijmeni'], $_POST['RC'], $_POST['login'], $_POST['heslo'], $_POST['zarazeni'], $DB_Zarazeni))
           {;}//echo "Předmět přidán.<br>";
         else
           {;}//echo "Předmět se nepodařilo přidat!<br>";
@@ -93,41 +108,42 @@ session_start();
     $script_url = $_SERVER['PHP_SELF'];   
       echo "<form action='$script_url' method='post'>"; ?>
     <center><table border="1">
-    <tr><td colspan="2"><center><h3>Upravit Rezervaci</h3></center></td></tr>
+    <tr><td colspan="2"><center><h3>Upravit uživatele</h3></center></td></tr>
     <tr>
-    	<td>Ucebna:</td>
-	    <td>
-		    <select name="ucebna">
-		    <?php 
-		      getUsersOptions('ucebna', 'Oznaceni');
-		    ?>
-		    </select>
-	    </td>
+    	<td>Jméno:</td>
+	    <td><input type="text" name="jmeno" value="<?php echo $DB_Jmeno; ?>"></td>
+    </tr>
+
+    <tr>
+    	<td>Příjmení:</td>
+	    <td><input type="text" name="prijmeni" value="<?php echo $DB_Prijmeni; ?>"></td>
+    </tr>
+
+    <tr>
+    	<td>Rodné číslo:</td>
+	    <td><input type="text" name="RC" value="<?php echo $DB_RC; ?>"></td>
+    </tr>
+
+    <tr>
+    	<td>Login:</td>
+	    <td><input type="text" name="login" value="<?php echo $DB_Login; ?>"></td>
+    </tr>
+
+    <tr>
+    	<td>Heslo:</td>
+	    <td><input type="text" name="heslo" value="<?php echo $DB_Heslo; ?>"></td>
     </tr>
     
-
-    <input type="hidden" name="RC" / value="<?php echo $uzivatel; ?>">
     <tr>
-	    <td>Zkratka predmetu:</td>
+	    <td>Zařazení:</td>
 	    <td>
-		    <select name="zkratka">
-		    <?php 
-		      getUsersOptions('predmet', 'Zkratka');
-		    ?>
-		    </select>
+		    <select name="zarazeni">
+		    	<option value='Akademicky pracovnik'>Akademický pracovník</option><br>
+		    	<option value='Administrator'>Administrátor</option><br>
+	    	</select>
 	    </td>
 	</tr>
-	<tr>
-		<td>Jednorazova:</td>
-		<td><input type="text" name="jed" value="<?php echo $DB_Jednorazova; ?>"></td>
-	</tr>
-    <input type="hidden" name="datum" / value="<?php
-      												$nowFormat = getdate();
-													$datum = $nowFormat["year"] . "-" . $nowFormat["mon"] . "-" . $nowFormat["mday"];
-													$cas = $nowFormat["hours"] . ":" . $nowFormat["minutes"] . ":" . $nowFormat["seconds"];
-													echo $datum;
-													?>">
-	<input type="hidden" name="cas" / value="<?php echo $cas; ?>" />
+	
 	<tr>
 		<td colspan="2"><center><input type="submit" name="submit" value="Upravit"></center></td>
 	</tr>

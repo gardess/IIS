@@ -17,28 +17,12 @@ session_start();
       echo mysql_error();
       return false;
     }
-    
-    $request = "select * from rezervace";// where Oznaceni='$name'";
-    /*
-    if(!($result = mysql_query($request))):
-      echo mysql_error();
-      $request = "delete from subject where acronym='$name'";
-      mysql_query($request);
-      return false;
-    endif;
-    
-    $record = MySQL_Fetch_Array($result);
-    $id = $record['id']; 
-    $request = "insert into lector_subject values('$garantID','$id')";
-    
-    if(!mysql_query($request)):
-      echo mysql_error();
-      $request = "delete from subject where acronym='$name'";
-      mysql_query($request);
-      return false;
-    endif;
-      */                   
-    return true;
+    else
+    {
+      echo "Rezervace byla úspěšně přidána..";
+      header('Location: rezervace.php');
+      return true;
+    }                
   }
 
 	function getUsersOptions($tabulka, $PK)

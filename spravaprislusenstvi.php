@@ -9,24 +9,24 @@ session_start();
 
   if (isset($_POST['pridat_button']))
   {
-    header('Location: predmet_pridat.php');
+    header('Location: prislusenstvi_pridat.php');
   }
   elseif (isset($_POST['upravit_button']))
   {
     if (!isset($_POST['vyber']))
     {
-      echo "Nebyl vybrán žádný předmět pro úpravu.";
+      echo "Nebylo vybráno žádné příslušenství pro úpravu.";
     }
     else
     {
       $_SESSION['value'] = $_POST['vyber'];
       if ($_SESSION['value'] != "")
       {
-          header('Location: predmet_upravit.php');
+          header('Location: prislusenstvi_upravit.php');
         }
         else
         {
-          echo "Nebyla vybrána žádná rezervace.";
+          echo "Nebylo vybráno žádné příslušenství.";
         }
       }
   }
@@ -34,17 +34,17 @@ session_start();
   {
     if (!isset($_POST['vyber']))
     {
-      echo "Nebyl vybrán žádný předmět pro smazání.";
+      echo "Nebylo vybráno žádné příslušenství pro smazání.";
     }
     else
       {
-        if(smazUzivatele($_POST['vyber']))
+        if(smazUcebnu($_POST['vyber']))
           {
-            echo "Předmět odebrán.<br>";
+            echo "Příslušenství odebráno.<br>";
           }
         else
         {
-              echo "Předmět se nepodařilo odebrat!<br>";
+            echo "Příslušenství se nepodařilo odebrat!<br>";
         }
       }
   }
@@ -54,11 +54,10 @@ session_start();
       
   }
 
-  function smazUzivatele($zkratka)
+  function smazUcebnu($zkratka)
     {
       connectDB();
-      echo "Zkratka: " . $zkratka . "</br>";
-      $requestt = "DELETE FROM predmet WHERE Zkratka = '".$zkratka."' ";
+      $requestt = "DELETE FROM prislusenstvi WHERE Inventarni_cislo = '".$zkratka."' ";
       if(!mysql_query($requestt))
       {
         echo mysql_error();
@@ -80,36 +79,40 @@ session_start();
   </head>
     
   <body>  
-    <h1>Správa uživatelů</h1>
+    <h1>Správa učeben</h1>
     <?php
       include "menu.php";
       echo "Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni'];
       showMenu($_SESSION['Zarazeni']);
+      echo '<center><table width=50%>
+      <td><center><a href="spravauceben.php">Správa učeben</a></center></td>
+      <td><center><a href="spravaprislusenstvi.php">Správa příslušenství</a></center></td>
+      </table></center>';
       ?>
       <!-- Zobrazeni tabulky s uzivateli -->
       <?php
     
         connectDB();
-        $result = mysql_query("select * from predmet");
+        $result = mysql_query("select * from prislusenstvi");
             
-            if(mysql_num_rows($result) == 0) // nemůže nikdy nastat
+            if(mysql_num_rows($result) == 0)
             {
-              echo "<center><h3>Neexistuje žádný předmět!</h3></center>";
+              echo "<center><h3>Neexistuje žádná učebna!</h3></center>";
               return false;
             }
-            echo "<center><h2>Seznam předmětů</h2>";
+            echo "<center><h2>Seznam příslušenství</h2>";
             echo "<table border=\"1\"><form method=\"post\"";
-            echo "<tr><td> </td><td>Zkratka</td><td>Název</td><td>Garant</td><td>Hodinová dotace</td><td>Počet kreditů</td></tr>";
+            echo "<tr><td> </td><td>Inventární číslo</td><td>Název</td><td>Místnost</td><td>Pořizovací cena</td><td>Datum pořízení</td><td>Určení</td></tr>";
             while($record = MySQL_Fetch_Array($result))
             {
               
-                $a = $record['Zkratka'];
+                $a = $record['Inventarni_cislo'];
                 $b = $record['Nazev'];
-                $c = $record['Garant'];   
-                $d = $record['Hodinova_dotace'];
-                $e = $record['Kredity'];     
-                echo "<tr><td><input type=\"radio\" name=\"vyber\" value=\"$a\"></td><td>$a</td><td>$b</td><td>$c</td><td>$d</td><td>$e</td></tr>";
-
+                $c = $record['Mistnost'];   
+                $d = $record['Porizovaci_cena'];
+                $e = $record['Datum_porizeni'];
+                $f = $record['Urceni'];
+                echo "<tr><td><input type=\"radio\" name=\"vyber\" value=\"$a\"></td><td>$a</td><td>$b</td><td>$c</td><td>$d</td><td>$e</td><td>$f</td></tr>";
             }
             echo "<tr><td colspan=\"7\"><center>
               <input type=\"submit\" name=\"pridat_button\" value=\"Přidat\">

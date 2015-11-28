@@ -21,7 +21,7 @@ elseif (isset($_POST['upravit_button']))
 	    }
 	    else
 	    {
-	    	echo "Nevybra jsi žádnou rezervaci.";
+	    	echo "Nebyla vybrána žádná rezervace.";
 	    }
     }
 }
@@ -112,10 +112,13 @@ function smazRezervaci($id, $RC)
 		    if(mysql_num_rows($result) == 0)
 		    {
 		    	echo "<center><h3>Není zadána žádná rezervace!</h3></center>";
+		    	echo "<form method=\"post\"><center>";
+		    	echo "<input type=\"submit\" name=\"pridat_button\" value=\"Přidat rezervaci\">";
+		    	echo "</center></form>";
 		    	return false;
 		    }
 		    echo "<center><h2>Aktuální rezervace</h2>";
-		    echo "<table border=\"1\"><form method=\"post\"";
+		    echo "<form method=\"post\"><table border=\"1\">";
 		    echo "<tr><td>ID</td><td>Učebna</td><td>Jméno a příjmení</td><td>Zkratka</td><td>Jednorázová</td><td>Datum přidání</td><td>Čas přidání</td></tr>";
 		    while($record = MySQL_Fetch_Array($result))
 		    {
@@ -141,7 +144,7 @@ function smazRezervaci($id, $RC)
 		    	<input type=\"submit\" name=\"upravit_button\" value=\"Upravit\">
 		    	<input type=\"submit\" name=\"odebrat_button\" value=\"Odebrat\">
 		    	</center></td></tr>";
-		    echo "</table></center>";
+		    echo "</table></form></center>";
     ?>
     </br>
     <?php

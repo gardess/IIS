@@ -1,23 +1,25 @@
 <?php
 session_start();
+	if ($_SESSION['Zarazeni'] != "Administrator")
+	{
+		echo "Nemate dostatecna opravneni.";
+		exit;
+	}
+
 	include "database.php";
-	function upravRezervaci($ozn, $RC, $zkr, $jed, $datum, $cas, $DB_RC)
+	function upravPrislusenstvi($nazev, $urceni, $cena, $datum, $mistnost)
 	{
 		connectDB();
-		if (($DB_RC != $RC) && ($_SESSION['Zarazeni'] != "Administrator"))
-		{
-			echo "Nemáte dostatečná oprávnění pro úpravu této rezervace.";
-			return false;
-		}
+
 
     //$request = "insert into rezervace(Datum_pridani, Cas_pridani, Oznaceni, Rodne_cislo, Zkratka, Jednorazova) values('$datum','$cas','$ozn','$RC','$zkr','$jed')";
-		$sql = "UPDATE rezervace SET 
-		Datum_pridani='$datum',
-		Cas_pridani='$cas',
-		Oznaceni='$ozn',
-		Zkratka='$zkr',
-		Jednorazova='$jed'
-		WHERE ID ='".$_SESSION['value']."' ";
+		$sql = "UPDATE prislusenstvi SET 
+		Nazev='$nazev',
+		Urceni='$urceni',
+		Porizovaci_cena='$cena',
+		Datum_porizeni='$datum',
+		Mistnost='$mistnost'
+		WHERE Inventarni_cislo ='".$_SESSION['value']."' ";
 		if(!mysql_query($sql))
 		{
 			echo mysql_error();
@@ -26,7 +28,7 @@ session_start();
 		else
 		{
 			echo "Úprava proběhla úspěšně.";
-			header('Location: rezervace.php');
+			header('Location: spravaprislusenstvi.php');
 			return true;
 		}
 	}
@@ -62,19 +64,24 @@ session_start();
     	echo "Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni'];
 		include "menu.php";
 		showMenu($_SESSION['Zarazeni']);
+		echo '<center><table width=50%>
+      <td><center><a href="spravauceben.php">Správa učeben</a></center></td>
+      <td><center><a href="spravaprislusenstvi.php">Správa příslušenství</a></center></td>
+      </table></center>';
 		
   	?>
     
   	<?php
   		connectDB();
-  		$req = "SELECT * FROM rezervace WHERE ID ='".$_SESSION['value']."' ";
+  		$req = "SELECT * FROM prislusenstvi WHERE Inventarni_cislo ='".$_SESSION['value']."' ";
         $res = mysql_query($req);
         while($rec = MySQL_Fetch_Array($res))
     	{
-    	   	$DB_Oznaceni = $rec['Oznaceni'];
-    	   	$DB_Zkratka = $rec['Zkratka'];
-    	   	$DB_Jednorazova = $rec['Jednorazova'];
-    	   	$DB_RC = $rec['Rodne_cislo'];
+    		$DB_Nazev = $rec['Nazev'];
+    	   	$DB_Urceni = $rec['Urceni'];
+    	   	$DB_Datum = $rec['Datum_porizeni'];
+    	   	$DB_Cena = $rec['Porizovaci_cena'];
+    	   	$DB_Mistnost = $rec['Mistnost'];
     	}
     	
   	?>
@@ -84,7 +91,7 @@ session_start();
     $uzivatel = $_SESSION['Rodne_cislo'];
     if(isset($_POST['submit'])):
       
-        if(upravRezervaci($_POST['ucebna'], $_POST['RC'], $_POST['zkratka'], $_POST['jed'], $_POST['datum'], $_POST['cas'], $DB_RC))
+        if(upravPrislusenstvi($_POST['nazev'], $_POST['urceni'], $_POST['cena'], $_POST['datum'], $_POST['mistnost']))
           {;}//echo "Předmět přidán.<br>";
         else
           {;}//echo "Předmět se nepodařilo přidat!<br>";
@@ -93,41 +100,38 @@ session_start();
     $script_url = $_SERVER['PHP_SELF'];   
       echo "<form action='$script_url' method='post'>"; ?>
     <center><table border="1">
-    <tr><td colspan="2"><center><h3>Upravit Rezervaci</h3></center></td></tr>
+    <tr><td colspan="2"><center><h3>Upravit uživatele</h3></center></td></tr>
     <tr>
-    	<td>Ucebna:</td>
+    	<td>Název:</td>
+	    <td><input type="text" name="nazev" value="<?php echo $DB_Nazev; ?>"></td>
+    </tr>
+
+    <tr>
+    	<td>Místnost:</td>
 	    <td>
-		    <select name="ucebna">
+		    <select name="mistnost">
 		    <?php 
 		      getUsersOptions('ucebna', 'Oznaceni');
 		    ?>
 		    </select>
 	    </td>
     </tr>
-    
 
-    <input type="hidden" name="RC" / value="<?php echo $uzivatel; ?>">
     <tr>
-	    <td>Zkratka predmetu:</td>
-	    <td>
-		    <select name="zkratka">
-		    <?php 
-		      getUsersOptions('predmet', 'Zkratka');
-		    ?>
-		    </select>
-	    </td>
-	</tr>
-	<tr>
-		<td>Jednorazova:</td>
-		<td><input type="text" name="jed" value="<?php echo $DB_Jednorazova; ?>"></td>
-	</tr>
-    <input type="hidden" name="datum" / value="<?php
-      												$nowFormat = getdate();
-													$datum = $nowFormat["year"] . "-" . $nowFormat["mon"] . "-" . $nowFormat["mday"];
-													$cas = $nowFormat["hours"] . ":" . $nowFormat["minutes"] . ":" . $nowFormat["seconds"];
-													echo $datum;
-													?>">
-	<input type="hidden" name="cas" / value="<?php echo $cas; ?>" />
+    	<td>Pořizovací cena:</td>
+	    <td><input type="text" name="cena" value="<?php echo $DB_Cena; ?>"></td>
+    </tr>
+
+    <tr>
+    	<td>Datum pořízení:</td>
+	    <td><input type="text" name="datum" value="<?php echo $DB_Datum; ?>"></td>
+    </tr>
+
+    <tr>
+    	<td>Určení:</td>
+	    <td><input type="text" name="urceni" value="<?php echo $DB_Urceni; ?>"></td>
+    </tr>
+	
 	<tr>
 		<td colspan="2"><center><input type="submit" name="submit" value="Upravit"></center></td>
 	</tr>

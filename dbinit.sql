@@ -26,12 +26,15 @@ CREATE TABLE prislusenstvi (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE akademicky_pracovnik (
-    Rodne_cislo INTEGER NOT NULL,
+    ID INTEGER NOT NULL AUTO_INCREMENT,
+    Rodne_cislo BIGINT NOT NULL,
     Jmeno VARCHAR(20) NOT NULL,
     Prijmeni VARCHAR(20) NOT NULL,
     Login VARCHAR(20) NOT NULL,
     Heslo VARCHAR(20) NOT NULL,
-    PRIMARY KEY (Rodne_cislo)
+    Zarazeni VARCHAR(20) NOT NULL,
+    PRIMARY KEY (Rodne_cislo),
+    UNIQUE (ID)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE predmet (
@@ -43,20 +46,12 @@ CREATE TABLE predmet (
     PRIMARY KEY (Zkratka)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci;
 
-CREATE TABLE ap_predmet (
-    Rodne_cislo INTEGER NOT NULL,
-    Zkratka VARCHAR(4) NOT NULL,
-    PRIMARY KEY (Rodne_cislo, Zkratka),
-    FOREIGN KEY (Rodne_cislo) REFERENCES akademicky_pracovnik(Rodne_cislo) ON DELETE CASCADE,
-    FOREIGN KEY (Zkratka) REFERENCES predmet(Zkratka) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci;
-
 CREATE TABLE rezervace (
     ID INTEGER NOT NULL AUTO_INCREMENT,
     Datum_pridani DATE NOT NULL,
     Cas_pridani VARCHAR(10) NOT NULL,
     Oznaceni VARCHAR(4) NOT NULL,
-    Rodne_cislo INTEGER NOT NULL,
+    Rodne_cislo BIGINT NOT NULL,
     Zkratka VARCHAR(4) NOT NULL,
     Jednorazova VARCHAR(1) NOT NULL,
     PRIMARY KEY (ID, Oznaceni, Rodne_cislo, Zkratka),
@@ -66,9 +61,9 @@ CREATE TABLE rezervace (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci;  
 
 
-INSERT INTO akademicky_pracovnik (Rodne_Cislo, Jmeno, Prijmeni, Login, Heslo) VALUES('9009213939', 'Al', 'Koholik', 'ap1', 'ap1');
-INSERT INTO akademicky_pracovnik (Rodne_Cislo, Jmeno, Prijmeni, Login, Heslo) VALUES('1234567890', 'Jarda', 'Jágr', 'admin', 'admin');
-INSERT INTO akademicky_pracovnik (Rodne_Cislo, Jmeno, Prijmeni, Login, Heslo) VALUES('0123456789', 'Petr', 'Bečka', 'ap2', 'ap2'); 
+INSERT INTO akademicky_pracovnik (Rodne_Cislo, Jmeno, Prijmeni, Login, Heslo, Zarazeni) VALUES('9009213939', 'Al', 'Koholik', 'ap1', 'ap1', 'Akademicky pracovnik');
+INSERT INTO akademicky_pracovnik (Rodne_Cislo, Jmeno, Prijmeni, Login, Heslo, Zarazeni) VALUES('1234567890', 'Jarda', 'Jágr', 'admin', 'admin', 'Administrator');
+INSERT INTO akademicky_pracovnik (Rodne_Cislo, Jmeno, Prijmeni, Login, Heslo, Zarazeni) VALUES('0123456789', 'Petr', 'Bečka', 'ap2', 'ap2', 'Akademicky pracovnik'); 
 
 INSERT INTO ucebna (Oznaceni, Cislo_mistnosti, Budova, Kapacita) VALUES('D105', '105', 'D', '300');
 INSERT INTO ucebna (Oznaceni, Cislo_mistnosti, Budova, Kapacita) VALUES('D206', '206', 'D', '160');
@@ -81,7 +76,3 @@ INSERT INTO prislusenstvi (Nazev, Urceni, Porizovaci_cena, Datum_porizeni, Mistn
 INSERT INTO predmet (Zkratka, Nazev, Garant, Hodinova_dotace, Kredity) VALUES('IPZ', 'Periferní zařízení', 'Kotásek', '3', '4');
 INSERT INTO predmet (Zkratka, Nazev, Garant, Hodinova_dotace, Kredity) VALUES('IMS', 'Modelování a simulace', 'Peringer', '3', '5');
 INSERT INTO predmet (Zkratka, Nazev, Garant, Hodinova_dotace, Kredity) VALUES('ISA', 'Síťové aplikace a správa sítí', 'Matoušek', '3', '5');
-
-INSERT INTO ap_predmet (Rodne_cislo, Zkratka) VALUES('9009213939', 'IPZ');
-INSERT INTO ap_predmet (Rodne_cislo, Zkratka) VALUES('0123456789', 'ISA');
-INSERT INTO ap_predmet (Rodne_cislo, Zkratka) VALUES('1234567890', 'IMS');
