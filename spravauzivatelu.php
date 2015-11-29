@@ -85,6 +85,7 @@ session_start();
 			include "menu.php";
 			echo "Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni'];
 			showMenu($_SESSION['Zarazeni']);
+			administraceMenu();
 	    ?>
 	    <!-- Zobrazeni tabulky s uzivateli -->
 	    <?php

@@ -1,24 +1,19 @@
 <?php
 session_start();
-	if ($_SESSION['Zarazeni'] != "Administrator")
-	{
-		echo "Nemate dostatecna opravneni.";
-		exit;
-	}
 
 	include "database.php";
-	function upravUcebnu($oznaceni, $cislo, $budova, $kapacita)
+	function upravUdaje($jmeno, $prijmeni, $RC, $login)
 	{
 		connectDB();
-
+		
 
     //$request = "insert into rezervace(Datum_pridani, Cas_pridani, Oznaceni, Rodne_cislo, Zkratka, Jednorazova) values('$datum','$cas','$ozn','$RC','$zkr','$jed')";
-		$sql = "UPDATE ucebna SET 
-		Oznaceni='$oznaceni',
-		Cislo_mistnosti='$cislo',
-		Budova='$budova',
-		Kapacita='$kapacita'
-		WHERE Oznaceni ='".$_SESSION['value']."' ";
+		$sql = "UPDATE akademicky_pracovnik SET 
+		Jmeno='$jmeno',
+		Prijmeni='$prijmeni',
+		Rodne_cislo='$RC',
+		Login='$login'
+		WHERE Rodne_cislo ='".$_SESSION['Rodne_cislo']."' ";
 		if(!mysql_query($sql))
 		{
 			echo mysql_error();
@@ -26,8 +21,12 @@ session_start();
 		}
 		else
 		{
+			$_SESSION['Rodne_cislo'] = $RC;
+			$_SESSION['Jmeno'] = $jmeno;
+			$_SESSION['Prijmeni'] = $prijmeni;
+			$_SESSION['login_user'] = $login;
 			echo "Úprava proběhla úspěšně.";
-			header('Location: spravauceben.php');
+			header('Location: nastaveni.php');
 			return true;
 		}
 	}
@@ -63,20 +62,19 @@ session_start();
     	echo "Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni'];
 		include "menu.php";
 		showMenu($_SESSION['Zarazeni']);
-		administraceMenu();
 		
   	?>
     
   	<?php
   		connectDB();
-  		$req = "SELECT * FROM ucebna WHERE Oznaceni ='".$_SESSION['value']."' ";
+  		$req = "SELECT * FROM akademicky_pracovnik WHERE Rodne_cislo ='".$_SESSION['Rodne_cislo']."' ";
         $res = mysql_query($req);
         while($rec = MySQL_Fetch_Array($res))
     	{
-    		$DB_Oznaceni = $rec['Oznaceni'];
-    	   	$DB_Cislo_Mistnosti = $rec['Cislo_mistnosti'];
-    	   	$DB_Budova = $rec['Budova'];
-    	   	$DB_Kapacita = $rec['Kapacita'];
+    		$DB_RC = $rec['Rodne_cislo'];
+    	   	$DB_Jmeno = $rec['Jmeno'];
+    	   	$DB_Prijmeni = $rec['Prijmeni'];
+    	   	$DB_Login = $rec['Login'];    	   	
     	}
     	
   	?>
@@ -86,7 +84,7 @@ session_start();
     $uzivatel = $_SESSION['Rodne_cislo'];
     if(isset($_POST['submit'])):
       
-        if(upravUcebnu($_POST['oznaceni'], $_POST['cislo'], $_POST['budova'], $_POST['kapacita']))
+        if(upravUdaje($_POST['jmeno'], $_POST['prijmeni'], $_POST['RC'], $_POST['login']))
           {;}//echo "Předmět přidán.<br>";
         else
           {;}//echo "Předmět se nepodařilo přidat!<br>";
@@ -95,27 +93,27 @@ session_start();
     $script_url = $_SERVER['PHP_SELF'];   
       echo "<form action='$script_url' method='post'>"; ?>
     <center><table border="1">
-    <tr><td colspan="2"><center><h3>Upravit učebnu</h3></center></td></tr>
+    <tr><td colspan="2"><center><h3>Upravit uživatele</h3></center></td></tr>
     <tr>
-    	<td>Označení:</td>
-	    <td><input type="text" name="oznaceni" value="<?php echo $DB_Oznaceni; ?>"></td>
+    	<td>Jméno:</td>
+	    <td><input type="text" name="jmeno" value="<?php echo $DB_Jmeno; ?>"></td>
     </tr>
 
     <tr>
-    	<td>Číslo místnosti:</td>
-	    <td><input type="text" name="cislo" value="<?php echo $DB_Cislo_Mistnosti; ?>"></td>
+    	<td>Příjmení:</td>
+	    <td><input type="text" name="prijmeni" value="<?php echo $DB_Prijmeni; ?>"></td>
     </tr>
 
     <tr>
-    	<td>Budova:</td>
-	    <td><input type="text" name="budova" value="<?php echo $DB_Budova; ?>"></td>
+    	<td>Rodné číslo:</td>
+	    <td><input type="text" name="RC" value="<?php echo $DB_RC; ?>"></td>
     </tr>
 
     <tr>
-    	<td>Kapacita:</td>
-	    <td><input type="text" name="kapacita" value="<?php echo $DB_Kapacita; ?>"></td>
+    	<td>Login:</td>
+	    <td><input type="text" name="login" value="<?php echo $DB_Login; ?>"></td>
     </tr>
-	
+
 	<tr>
 		<td colspan="2"><center><input type="submit" name="submit" value="Upravit"></center></td>
 	</tr>

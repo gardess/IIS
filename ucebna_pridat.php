@@ -56,10 +56,7 @@ session_start();
 			echo "Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni'];
 			include "menu.php";
 			showMenu($_SESSION['Zarazeni']);
-			echo '<center><table width=50%>
-      <td><center><a href="spravauceben.php">Správa učeben</a></center></td>
-      <td><center><a href="spravaprislusenstvi.php">Správa příslušenství</a></center></td>
-      </table></center>';
+			administraceMenu();
 		?>
 
     <!-- Formulář pro vytvoření nového uživatele -->
@@ -75,7 +72,7 @@ session_start();
     $script_url = $_SERVER['PHP_SELF'];   
       echo "<form action='$script_url' method='post'>"; ?>
     <center><table border="1">
-    <tr><td colspan="2"><center><h3>Přidat předmět</h3></center></td></tr>
+    <tr><td colspan="2"><center><h3>Přidat učebnu</h3></center></td></tr>
     <tr>
     	<td>Označení:</td>
 	    <td><input type="text" name="oznaceni"></td>

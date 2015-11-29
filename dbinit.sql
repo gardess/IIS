@@ -1,3 +1,6 @@
+USE xgarda04;
+SET NAMES 'utf8';
+
 drop table if exists ap_predmet;
 drop table if exists rezervace;
 drop table if exists akademicky_pracovnik;
@@ -19,7 +22,7 @@ CREATE TABLE prislusenstvi (
     Nazev VARCHAR(50) NOT NULL,
     Urceni VARCHAR(30),
     Porizovaci_cena INTEGER NOT NULL,
-    Datum_porizeni TIMESTAMP NOT NULL,
+    Datum_porizeni DATE NOT NULL,
     Mistnost VARCHAR(4) NOT NULL,
     PRIMARY KEY (Inventarni_cislo),
     FOREIGN KEY (Mistnost) REFERENCES ucebna(Oznaceni) ON DELETE CASCADE
@@ -69,9 +72,9 @@ INSERT INTO ucebna (Oznaceni, Cislo_mistnosti, Budova, Kapacita) VALUES('D105', 
 INSERT INTO ucebna (Oznaceni, Cislo_mistnosti, Budova, Kapacita) VALUES('D206', '206', 'D', '160');
 INSERT INTO ucebna (Oznaceni, Cislo_mistnosti, Budova, Kapacita) VALUES('D207', '207', 'D', '70');
 
-INSERT INTO prislusenstvi (Nazev, Urceni, Porizovaci_cena, Datum_porizeni, Mistnost) VALUES('Projektor', 'k promitani', '100000', STR_TO_DATE('03,01,2015,7,00', '%d,%m,%Y,%h,%i'), 'D105');
-INSERT INTO prislusenstvi (Nazev, Urceni, Porizovaci_cena, Datum_porizeni, Mistnost) VALUES('Projektor', 'k promitani', '100000', STR_TO_DATE('12,01,2015,8,00', '%d,%m,%Y,%h,%i'), 'D207');
-INSERT INTO prislusenstvi (Nazev, Urceni, Porizovaci_cena, Datum_porizeni, Mistnost) VALUES('Projektor', 'k promitani', '100000', STR_TO_DATE('03,01,2015,7,00', '%d,%m,%Y,%h,%i'), 'D206');
+INSERT INTO prislusenstvi (Nazev, Urceni, Porizovaci_cena, Datum_porizeni, Mistnost) VALUES('Projektor', 'k promitani', '100000', STR_TO_DATE('03,11,2015', '%d,%m,%Y'), 'D105');
+INSERT INTO prislusenstvi (Nazev, Urceni, Porizovaci_cena, Datum_porizeni, Mistnost) VALUES('Projektor', 'k promitani', '100000', STR_TO_DATE('12,11,2015', '%d,%m,%Y'), 'D207');
+INSERT INTO prislusenstvi (Nazev, Urceni, Porizovaci_cena, Datum_porizeni, Mistnost) VALUES('Projektor', 'k promitani', '100000', STR_TO_DATE('03,11,2015', '%d,%m,%Y'), 'D206');
 
 INSERT INTO predmet (Zkratka, Nazev, Garant, Hodinova_dotace, Kredity) VALUES('IPZ', 'Periferní zařízení', 'Kotásek', '3', '4');
 INSERT INTO predmet (Zkratka, Nazev, Garant, Hodinova_dotace, Kredity) VALUES('IMS', 'Modelování a simulace', 'Peringer', '3', '5');

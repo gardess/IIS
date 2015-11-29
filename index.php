@@ -45,7 +45,7 @@ if (!isset($_SESSION['logged']))
 		        $a = $record['Oznaceni'];
 
 		        $b = $record['Rodne_cislo'];
-		        $res = mysql_query("select Jmeno, Prijmeni from Akademicky_pracovnik where Rodne_cislo = $b");
+		        $res = mysql_query("SELECT * from akademicky_pracovnik where Rodne_cislo ='".$b."' ");
 		        	while($rec = MySQL_Fetch_Array($res))
 		        	{
 		        		$ba = $rec['Jmeno'];

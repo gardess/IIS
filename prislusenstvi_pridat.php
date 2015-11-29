@@ -56,10 +56,7 @@ session_start();
 			echo "Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni'];
 			include "menu.php";
 			showMenu($_SESSION['Zarazeni']);
-			echo '<center><table width=50%>
-      <td><center><a href="spravauceben.php">Správa učeben</a></center></td>
-      <td><center><a href="spravaprislusenstvi.php">Správa příslušenství</a></center></td>
-      </table></center>';
+			administraceMenu();
 		?>
 
     <!-- Formulář pro vytvoření nového uživatele -->

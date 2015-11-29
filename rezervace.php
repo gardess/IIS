@@ -126,7 +126,8 @@ function smazRezervaci($id, $RC)
 		        $a = $record['Oznaceni'];
 
 		        $b = $record['Rodne_cislo'];
-		        $res = mysql_query("select Jmeno, Prijmeni from Akademicky_pracovnik where Rodne_cislo = $b");
+		        //$pozadavek = mysql_query("select * from akademicky_pracovnik where Mistnost ='".$a."' AND Nazev ='".$e."' ");
+		        $res = mysql_query("SELECT * from akademicky_pracovnik where Rodne_cislo ='".$b."' ");
 		        	while($rec = MySQL_Fetch_Array($res))
 		        	{
 		        		$ba = $rec['Jmeno'];
