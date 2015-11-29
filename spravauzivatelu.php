@@ -1,5 +1,6 @@
 <?php
 session_start();
+header('Content-type: text/html; charset=utf-8');
 	include "database.php";
 	if ($_SESSION['Zarazeni'] != "Administrator")
 	{

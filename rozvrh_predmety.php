@@ -51,14 +51,14 @@ function getUsersOptions($tabulka, $PK)
 			?>
 
 		<?php
-			if(isset($_POST['ucebna']))
+			if(isset($_POST['predmet']))
 			{
-				$vybranaUcebna = $_POST['ucebna'];
+				$vybranyPredmet = $_POST['predmet'];
 				$vybraneDatum = $_POST['datum'];
 			}
 			else
 			{
-				$vybranaUcebna = "D105";
+				$vybranyPredmet = "IIS";
 				$vybraneDatum = date("Y-m-d");
 			}
 		?>
@@ -69,11 +69,11 @@ function getUsersOptions($tabulka, $PK)
 		?>
     		</br><center><table border="1">
     			<tr>
-    				<td>Zvol učebnu:</td>
+    				<td>Zvol předmět:</td>
     				<td>
-	    				<select name="ucebna">
+	    				<select name="predmet">
 		    				<?php
-						    	getUsersOptions("ucebna","Oznaceni");
+						    	getUsersOptions("predmet","Zkratka");
 							?>
 						</select>
 					</td>
@@ -97,14 +97,14 @@ function getUsersOptions($tabulka, $PK)
 
     	<?php
 			
-			$sql="SELECT * FROM rezervace WHERE Oznaceni ='$vybranaUcebna' AND Datum ='$vybraneDatum'";
+			$sql="SELECT * FROM rezervace WHERE Zkratka ='$vybranyPredmet' AND Datum ='$vybraneDatum'";
       		$result=mysql_query($sql);
       		if(mysql_num_rows($result) == 0)
 		    {
 		    	echo "<center><h3>Není zadána žádná rezervace!</h3></center>";
 		    	return false;
 		    }
-		    echo "<center><h2>Rozvrh pro učebnu ". $vybranaUcebna ." dne ". $vybraneDatum ."</h2></center>";
+		    echo "<center><h2>Rozvrh pro předmět ". $vybranyPredmet ." dne ". $vybraneDatum ."</h2></center>";
 		    $barvaPrednaska = "#99FF99";
 		    $barvaCviceni = "FFE8B4";
 		    $barvaDemoCviceni = "CCFFFF";
@@ -213,44 +213,8 @@ function getUsersOptions($tabulka, $PK)
 
 		    }
 		    echo "</table></center>";
-		    /*$result = mysql_query("select * from rezervace");
-		    
-		    if(mysql_num_rows($result) == 0)
-		    {
-		    	echo "<center><h3>Není zadána žádná rezervace!</h3></center>";
-		    	return false;
-		    }
-		    echo "<center><h2>Aktuální rezervace</h2>";
-		    echo "<table border=\"1\">";
-		    echo "<tr><td>ID</td><td>Učebna</td><td>Jméno a příjmení</td><td>Zkratka</td><td>Jednorázová</td><td>Datum přidání</td><td>Čas přidání</td></tr>";
-		    while($record = MySQL_Fetch_Array($result))
-		    {
-		    	$aa = $record['ID'];
-		        $a = $record['Oznaceni'];
-
-		        $b = $record['Rodne_cislo'];
-		        $res = mysql_query("SELECT * from akademicky_pracovnik where Rodne_cislo ='".$b."' ");
-		        	while($rec = MySQL_Fetch_Array($res))
-		        	{
-		        		$ba = $rec['Jmeno'];
-		        		$bb = $rec['Prijmeni'];
-		        	}
-		        $c = $record['Zkratka'];
-		        $d = $record['Jednorazova'];
-		        $e = $record['Datum_pridani'];
-		        $f = $record['Cas_pridani'];      
-		      	echo "<tr><td>$aa</td><td>$a</td><td>$ba $bb</td><td>$c</td><td>$d</td><td>$e</td><td>$f</td></tr>";
-		    }
-		    echo "</table></center>";*/
-
-
 		    echo "</br>";
 		    print_r($_SESSION);
    		?>  
-   		
-   		
-
-
-
   	</body>
 </html>

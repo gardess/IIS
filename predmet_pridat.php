@@ -1,5 +1,6 @@
 <?php
 session_start();
+header('Content-type: text/html; charset=utf-8');
 	if ($_SESSION['Zarazeni'] != "Administrator")
 	{
 		echo "Nemate dostatecna opravneni.";
@@ -7,11 +8,11 @@ session_start();
 	}
 
 	include "database.php";
-	function vytvorPredmet($zkratka, $nazev, $garant, $dotace, $kredity)
+	function vytvorPredmet($zkratka, $nazev, $garant, $dotace, $kredity, $rocnik)
 	{
 		connectDB();
 		echo "Rodne cislo: " . $RC;
-		$request = "insert into predmet(Zkratka, Nazev, Garant, Hodinova_dotace, Kredity) values('$zkratka','$nazev','$garant','$dotace','$kredity')";
+		$request = "insert into predmet(Zkratka, Nazev, Garant, Hodinova_dotace, Kredity, Rocnik) values('$zkratka','$nazev','$garant','$dotace','$kredity','$rocnik')";
 
 		if(!mysql_query($request))
 		{
@@ -26,17 +27,19 @@ session_start();
 		}                
 	}
 
-	function getUsersOptions($tabulka, $PK)
+	function ziskejGaranta()
 	{
 		connectDB();
 	    
-		$result = mysql_query("select * from $tabulka");
+		$result = mysql_query("select * from akademicky_pracovnik");
 		$i = 0;
 		while($record = MySQL_Fetch_Array($result))
 		{
-			$zkratka = $record[$PK];
-			echo "<option value='$zkratka'>";
-			echo "$zkratka";
+			$RC = $record['Rodne_cislo'];
+			$Jmeno = $record['Jmeno'];
+			$Prijmeni = $record['Prijmeni'];
+			echo "<option value='$RC'>";
+			echo $Jmeno." ". $Prijmeni;
 			echo "</option><br>";
 			$i++;
 		}
@@ -65,7 +68,7 @@ session_start();
     $uzivatel = $_SESSION['Rodne_cislo'];
     if(isset($_POST['submit'])):
       //echo "ucebna: " . $_POST['ucebna'] . "rodne cislo: " . $_POST['RC'] . "predmet: " . $_POST['zkratka'] . "jednorazova: " . $_POST['jed']. "datum: " . $_POST['datum']. "cas: " . $_POST['cas'] . "</br>";
-        if(vytvorPredmet($_POST['zkratka'], $_POST['nazev'], $_POST['garant'], $_POST['dotace'], $_POST['kredity']))
+        if(vytvorPredmet($_POST['zkratka'], $_POST['nazev'], $_POST['garant'], $_POST['dotace'], $_POST['kredity'], $_POST['rocnik']))
           echo "Předmět přidán.<br>";
         else
           echo "Předmět se nepodařilo vytvořit!<br>";
@@ -86,8 +89,24 @@ session_start();
 
     <tr>
     	<td>Garant:</td>
-	    <td><input type="text" name="garant"></td>
+    	<td>
+		    <select name="garant">
+			    <?php 
+			      ziskejGaranta();
+			    ?>
+			</select>
+    	</td>
     </tr>
+
+    <tr>
+    	<td>Ročník:<td>
+    	<select name="rocnik">
+		    	<option value='1BIT'>1BIT</option><br>
+		    	<option value='2BIT'>2BIT</option><br>
+		    	<option value='3BIT'>3BIT</option><br>
+		    	<option value='1MIT'>1MIT</option><br>
+		    	<option value='2MIT'>2MIT</option><br>
+	    	</select>
 
     <tr>
     	<td>Hodinová dotace:</td>

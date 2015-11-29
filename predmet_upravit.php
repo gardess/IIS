@@ -1,5 +1,6 @@
 <?php
 session_start();
+header('Content-type: text/html; charset=utf-8');
 	if ($_SESSION['Zarazeni'] != "Administrator")
 	{
 		echo "Nemate dostatecna opravneni.";
@@ -7,7 +8,7 @@ session_start();
 	}
 
 	include "database.php";
-	function upravRezervaci($zkratka, $nazev, $garant, $dotace, $kredity)
+	function upravRezervaci($zkratka, $nazev, $garant, $dotace, $kredity, $rocnik)
 	{
 		connectDB();
 
@@ -17,7 +18,8 @@ session_start();
 		Nazev='$nazev',
 		Garant='$garant',
 		Hodinova_dotace='$dotace',
-		Kredity='$kredity'
+		Kredity='$kredity',
+    Rocnik='$rocnik'
 		WHERE Zkratka ='".$_SESSION['value']."' ";
 		if(!mysql_query($sql))
 		{
@@ -32,20 +34,23 @@ session_start();
 		}
 	}
 
-	function getUsersOptions($tabulka, $PK)
-	{
-		connectDB();
-		$result = mysql_query("select * from $tabulka");
-		$i = 0;
-		while($record = MySQL_Fetch_Array($result))
-		{
-			$zkratka = $record[$PK];
-			echo "<option value='$zkratka'>";
-			echo "$zkratka";
-			echo "</option><br>";
-			$i++;
-		}
-	}
+	function ziskejGaranta()
+  {
+    connectDB();
+      
+    $result = mysql_query("select * from akademicky_pracovnik");
+    $i = 0;
+    while($record = MySQL_Fetch_Array($result))
+    {
+      $RC = $record['Rodne_cislo'];
+      $Jmeno = $record['Jmeno'];
+      $Prijmeni = $record['Prijmeni'];
+      echo "<option value='$RC'>";
+      echo $Jmeno." ". $Prijmeni;
+      echo "</option><br>";
+      $i++;
+    }
+  }
 ?>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
@@ -86,7 +91,7 @@ session_start();
     $uzivatel = $_SESSION['Rodne_cislo'];
     if(isset($_POST['submit'])):
       
-        if(upravRezervaci($_POST['zkratka'], $_POST['nazev'], $_POST['garant'], $_POST['dotace'], $_POST['kredity']))
+        if(upravRezervaci($_POST['zkratka'], $_POST['nazev'], $_POST['garant'], $_POST['dotace'], $_POST['kredity'], $_POST['rocnik']))
           {;}//echo "Předmět přidán.<br>";
         else
           {;}//echo "Předmět se nepodařilo přidat!<br>";
@@ -107,9 +112,26 @@ session_start();
     </tr>
 
     <tr>
-    	<td>Garant:</td>
-	    <td><input type="text" name="garant" value="<?php echo $DB_Garant; ?>"></td>
+      <td>Garant:</td>
+      <td>
+        <select name="garant">
+          <?php 
+            ziskejGaranta();
+          ?>
+      </select>
+      </td>
     </tr>
+
+    <tr>
+      <td>Ročník:<td>
+      <select name="rocnik">
+          <option value='1BIT'>1BIT</option><br>
+          <option value='2BIT'>2BIT</option><br>
+          <option value='3BIT'>3BIT</option><br>
+          <option value='1MIT'>1MIT</option><br>
+          <option value='2MIT'>2MIT</option><br>
+        </select>
+    <tr>
 
     <tr>
     	<td>Hodinová dotace:</td>

@@ -1,5 +1,6 @@
 <?php
 session_start();
+header('Content-type: text/html; charset=utf-8');
 include "database.php";
 if (isset($_POST['pridat_button']))
 {
@@ -119,7 +120,7 @@ function smazRezervaci($id, $RC)
 		    }
 		    echo "<center><h2>Aktuální rezervace</h2>";
 		    echo "<form method=\"post\"><table border=\"1\">";
-		    echo "<tr><td>ID</td><td>Učebna</td><td>Jméno a příjmení</td><td>Zkratka</td><td>Jednorázová</td><td>Datum přidání</td><td>Čas přidání</td></tr>";
+		    echo "<tr><td>ID</td><td>Učebna</td><td>Jméno a příjmení</td><td>Předmět</td><td>Ročník</td><td>Typ výuky</td><td>Datum</td><td>Čas</td><td>Datum přidání</td><td>Čas přidání</td></tr>";
 		    while($record = MySQL_Fetch_Array($result))
 		    {
 		    	$aa = $record['ID'];
@@ -134,13 +135,24 @@ function smazRezervaci($id, $RC)
 		        		$bb = $rec['Prijmeni'];
 		        	}
 		        $c = $record['Zkratka'];
-		        $d = $record['Jednorazova'];
+		        $d = $record['Datum'];
+		        $dd = $record['Cas'];
 		        $e = $record['Datum_pridani'];
-		        $f = $record['Cas_pridani'];      
-		      	echo "<tr><td><input type=\"radio\" name=\"vyber\" value=\"$aa\">$aa</td><td>$a</td><td>$ba $bb</td><td>$c</td><td>$d</td><td>$e</td><td>$f</td></tr>";
+		        $f = $record['Cas_pridani'];
+		        $delka = $record['Delka'];
+		        $typ = $record['Typ'];
+		        $ress = mysql_query("SELECT * from predmet where Zkratka ='".$c."' ");
+		        	while($recc = MySQL_Fetch_Array($ress))
+		        	{
+		        		$h = $recc['Rocnik'];
+		        	}
+		              
+		      	echo "<tr><td><input type=\"radio\" name=\"vyber\" value=\"$aa\">$aa</td><td>$a</td><td>$ba $bb</td><td>$c</td><td>$h</td><td>$typ</td><td>$d</td><td>$dd".":00 - ";
+		      	echo $dd+$delka-1;
+		      	echo ":50</td><td>$e</td><td>$f</td></tr>";
 
 		    }
-		    echo "<tr><td colspan=\"7\"><center>
+		    echo "<tr><td colspan=\"10\"><center>
 		    	<input type=\"submit\" name=\"pridat_button\" value=\"Přidat\">
 		    	<input type=\"submit\" name=\"upravit_button\" value=\"Upravit\">
 		    	<input type=\"submit\" name=\"odebrat_button\" value=\"Odebrat\">

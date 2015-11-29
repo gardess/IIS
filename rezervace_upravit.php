@@ -1,7 +1,8 @@
 <?php
 session_start();
+header('Content-type: text/html; charset=utf-8');
 	include "database.php";
-	function upravRezervaci($ozn, $RC, $zkr, $jed, $datum, $cas, $DB_RC)
+	function upravRezervaci($ozn, $RC, $zkr, $datum, $cas, $DB_RC, $datumR, $casR, $delkaR, $typ)
 	{
 		connectDB();
 		if (($DB_RC != $RC) && ($_SESSION['Zarazeni'] != "Administrator"))
@@ -16,7 +17,10 @@ session_start();
 		Cas_pridani='$cas',
 		Oznaceni='$ozn',
 		Zkratka='$zkr',
-		Jednorazova='$jed'
+		Datum='$datumR',
+		Cas='$casR',
+		Delka='$delkaR',
+		Typ='$typ'
 		WHERE ID ='".$_SESSION['value']."' ";
 		if(!mysql_query($sql))
 		{
@@ -73,8 +77,11 @@ session_start();
     	{
     	   	$DB_Oznaceni = $rec['Oznaceni'];
     	   	$DB_Zkratka = $rec['Zkratka'];
-    	   	$DB_Jednorazova = $rec['Jednorazova'];
     	   	$DB_RC = $rec['Rodne_cislo'];
+    	   	$DB_DatumR = $rec['Datum'];
+    	   	$DB_CasR = $rec['Cas'];
+    	   	$DB_DelkaR = $rec['Delka'];
+
     	}
     	
   	?>
@@ -84,7 +91,7 @@ session_start();
     $uzivatel = $_SESSION['Rodne_cislo'];
     if(isset($_POST['submit'])):
       
-        if(upravRezervaci($_POST['ucebna'], $_POST['RC'], $_POST['zkratka'], $_POST['jed'], $_POST['datum'], $_POST['cas'], $DB_RC))
+        if(upravRezervaci($_POST['ucebna'], $_POST['RC'], $_POST['zkratka'], $_POST['datum'], $_POST['cas'], $DB_RC, $_POST['datumR'], $_POST['casR'], $_POST['delkaR'], $_POST['typ']))
           {;}//echo "Předmět přidán.<br>";
         else
           {;}//echo "Předmět se nepodařilo přidat!<br>";
@@ -118,9 +125,29 @@ session_start();
 	    </td>
 	</tr>
 	<tr>
-		<td>Jednorazova:</td>
-		<td><input type="text" name="jed" value="<?php echo $DB_Jednorazova; ?>"></td>
+		<td>Datum:</td>
+		<td><input type="text" name="datumR" value="<?php echo $DB_DatumR; ?>"></td>
 	</tr>
+	<tr>
+		<td>Cas:</td>
+		<td><input type="text" name="casR" value="<?php echo $DB_CasR; ?>"></td>
+	</tr>
+	<tr>
+		<td>Delka:</td>
+		<td><input type="text" name="delkaR" value="<?php echo $DB_DelkaR; ?>"></td>
+	</tr>
+
+	<tr>
+      <td>Typ výuky:<td>
+      <select name="typ">
+          <option value='Přednáška'>Přednáška</option><br>
+          <option value='Cvičení'>Cvičení</option><br>
+          <option value='Demonstrační cvičení'>Demonstrační cvičení</option><br>
+          <option value='Zkouška'>Zkouška</option><br>
+        </select>
+
+    <tr>
+
     <input type="hidden" name="datum" / value="<?php
       												$nowFormat = getdate();
 													$datum = $nowFormat["year"] . "-" . $nowFormat["mon"] . "-" . $nowFormat["mday"];

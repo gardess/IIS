@@ -1,5 +1,6 @@
 <?php
 session_start();
+header('Content-type: text/html; charset=utf-8');
   include "database.php";
   if ($_SESSION['Zarazeni'] != "Administrator")
   {
@@ -54,22 +55,22 @@ session_start();
       
   }
 
-  function smazUzivatele($zkratka)
-    {
-      connectDB();
-      echo "Zkratka: " . $zkratka . "</br>";
-      $requestt = "DELETE FROM predmet WHERE Zkratka = '".$zkratka."' ";
-      if(!mysql_query($requestt))
-      {
-        echo mysql_error();
-        return false;
-      }
-      else
-      {
-        echo "Smazání proběhlo úspěšně.";
-        return true;
-      }
-    }
+	function smazUzivatele($zkratka)
+	{
+		connectDB();
+
+		$requestt = "DELETE FROM predmet WHERE Zkratka = '".$zkratka."' ";
+		if(!mysql_query($requestt))
+		{
+			echo mysql_error();
+			return false;
+		}
+		else
+		{
+			echo "Smazání proběhlo úspěšně.";
+			return true;
+		}
+	}
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
@@ -91,6 +92,7 @@ session_start();
       <?php
     
         connectDB();
+
         $result = mysql_query("select * from predmet");
             
             if(mysql_num_rows($result) == 0) // nemůže nikdy nastat
@@ -100,19 +102,35 @@ session_start();
             }
             echo "<center><h2>Seznam předmětů</h2>";
             echo "<table border=\"1\"><form method=\"post\"";
-            echo "<tr><td> </td><td>Zkratka</td><td>Název</td><td>Garant</td><td>Hodinová dotace</td><td>Počet kreditů</td></tr>";
+            echo "<tr><td> </td><td>Zkratka</td><td>Název</td><td>Garant</td><td>Ročník</td><td>Obor</td><td>Hodinová dotace</td><td>Počet kreditů</td></tr>";
             while($record = MySQL_Fetch_Array($result))
             {
               
                 $a = $record['Zkratka'];
                 $b = $record['Nazev'];
-                $c = $record['Garant'];   
+                $c = $record['Garant'];
+                $res = mysql_query("SELECT * from akademicky_pracovnik where Rodne_cislo ='".$c."' ");
+		        	while($rec = MySQL_Fetch_Array($res))
+		        	{
+		        		$ca = $rec['Jmeno'];
+		        		$cb = $rec['Prijmeni'];
+		        	}   
                 $d = $record['Hodinova_dotace'];
-                $e = $record['Kredity'];     
-                echo "<tr><td><input type=\"radio\" name=\"vyber\" value=\"$a\"></td><td>$a</td><td>$b</td><td>$c</td><td>$d</td><td>$e</td></tr>";
+                $e = $record['Kredity'];
+                //$f = $record['Obor'];
+                $g = $record['Rocnik'];     
+                if ($g [1] == 'B')
+                {
+                	$go = "Bakalář";
+                }
+                else
+                {
+                	$go = "Magistr";
+                }
+                echo "<tr><td><input type=\"radio\" name=\"vyber\" value=\"$a\"></td><td>$a</td><td>$b</td><td>$ca $cb</td><td>$g</td><td>$go</td><td>$d</td><td>$e</td></tr>";
 
             }
-            echo "<tr><td colspan=\"7\"><center>
+            echo "<tr><td colspan=\"9\"><center>
               <input type=\"submit\" name=\"pridat_button\" value=\"Přidat\">
               <input type=\"submit\" name=\"upravit_button\" value=\"Upravit\">
               <input type=\"submit\" name=\"odebrat_button\" value=\"Odebrat\">
