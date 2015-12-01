@@ -50,16 +50,24 @@ header('Content-type: text/html; charset=utf-8');
 	<head>
 		<title>Informační systém - Učebny</title>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="styl.css" />
 	</head>
   
 	<body>  
-		<h1>Rezervace</h1>
-		<?php
-			echo "Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni'];
-			include "menu.php";
-			showMenu($_SESSION['Zarazeni']);
+    <div id="wrapper">
+        <div id="header">
+    		<h1>&nbsp;Učebny</h1>
+    	</div>
+    	<?php
+    		if ((($_SESSION['Zarazeni']) == "Administrator") || (($_SESSION['Zarazeni']) == "Akademicky pracovnik"))
+    		echo "<div id=\"prihlasen\">Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni']."&nbsp;</div>";
+		    connectDB();
+		    include "menu.php";
+			showMenu();
 			administraceMenu();
-		?>
+			?>
+		<div id="telo">	
+		<h2 class="nadpis">Vytvoření uživatele</h2>
 
     <!-- Formulář pro vytvoření nového uživatele -->
     <?php
@@ -74,53 +82,54 @@ header('Content-type: text/html; charset=utf-8');
     $script_url = $_SERVER['PHP_SELF'];   
       echo "<form action='$script_url' method='post'>"; ?>
     <center><table border="1">
-    <tr><td colspan="2"><center><h3>Přidat uživatele</h3></center></td></tr>
     <tr>
     	<td>Jméno:</td>
-	    <td><input type="text" name="jmeno"></td>
+	    <td><input type="text" name="jmeno" size="20"></td>
     </tr>
 
     <tr>
     	<td>Příjmení:</td>
-	    <td><input type="text" name="prijmeni"></td>
+	    <td><input type="text" name="prijmeni" size="20"></td>
     </tr>
 
     <tr>
     	<td>Rodné číslo:</td>
-	    <td><input type="text" name="rodne_cislo"></td>
+	    <td><input type="text" name="rodne_cislo" size="20"></td>
     </tr>
 
     <tr>
     	<td>Login:</td>
-	    <td><input type="text" name="login"></td>
+	    <td><input type="text" name="login" size="20"></td>
     </tr>
 
     <tr>
     	<td>Heslo:</td>
-	    <td><input type="text" name="heslo"></td>
+	    <td><input type="text" name="heslo" size="20"></td>
     </tr>
 
     <tr>
     	<td>Funkce:</td>
 	    <td>
-	    	<select name="funkce">
+	    	<select name="funkce" style="width: 173px">
 		    	<option value='Akademicky pracovnik'>Akademický pracovník</option><br>
 		    	<option value='Administrator'>Administrátor</option><br>
 	    	</select>
 	    </td>
     </tr>
     
-	<tr>
-		<td colspan="2"><center><input type="submit" name="submit" value="Přidat"></center></td>
-	</tr>
-	</table></center>
+	</table>
+	<br>
+	<center><input type="submit" name="submit" value="Přidat uživatele"></center>
+	</center>
     </form>
 
 
     <!-- -->
-    <?php
-   		echo "</br>";
-		print_r($_SESSION);
-  	?>
+    <br>
+    </div>
+   		<div id="footer">
+   		Vytvořil Milan Gardáš a Filip Pobořil&nbsp;
+		</div>
+   	</div>
   </body>
 </html>

@@ -58,6 +58,24 @@ header('Content-type: text/html; charset=utf-8');
 			$i++;
 		}
 	}
+
+function optionSelect($typ)
+{
+	if ($typ == 'Akademicky pracovnik')
+	{
+		echo "
+		<option value='Akademicky pracovnik' selected='selected'>Akademický pracovník</option><br>
+		<option value='Administrator'>Administrátor</option><br>";
+	}
+	else if ($typ == 'Administrator')
+	{
+		echo "
+		<option value='Akademicky pracovnik'>Akademický pracovník</option><br>
+		<option value='Administrator' selected='selected'>Administrátor</option><br>";
+	}
+}
+
+		    	
 ?>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
@@ -65,19 +83,25 @@ header('Content-type: text/html; charset=utf-8');
 <html>
   <head>
     <title>Informační systém - Učebny</title>
-    <meta http-equiv="content-type" 
-    content="text/html; charset=utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="styl.css" />
   </head>
   
   <body>  
-    <h1>Rezervace - UPRAVIT</h1>
-     <?php
-    	echo "Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni'];
-		include "menu.php";
-		showMenu($_SESSION['Zarazeni']);
-		administraceMenu();
-		
-  	?>
+    <div id="wrapper">
+        <div id="header">
+    		<h1>&nbsp;Učebny</h1>
+    	</div>
+    	<?php
+    		if ((($_SESSION['Zarazeni']) == "Administrator") || (($_SESSION['Zarazeni']) == "Akademicky pracovnik"))
+    		echo "<div id=\"prihlasen\">Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni']."&nbsp;</div>";
+		    connectDB();
+		    include "menu.php";
+			showMenu();
+			administraceMenu();
+			?>
+		<div id="telo">	
+		<h2 class="nadpis">Upravení uživatele</h2>
     
   	<?php
   		connectDB();
@@ -89,7 +113,6 @@ header('Content-type: text/html; charset=utf-8');
     	   	$DB_Jmeno = $rec['Jmeno'];
     	   	$DB_Prijmeni = $rec['Prijmeni'];
     	   	$DB_Login = $rec['Login'];
-    	   	$DB_Heslo = $rec['Heslo'];
     	   	$DB_Zarazeni = $rec['Zarazeni'];
     	   	
     	}
@@ -110,53 +133,49 @@ header('Content-type: text/html; charset=utf-8');
     $script_url = $_SERVER['PHP_SELF'];   
       echo "<form action='$script_url' method='post'>"; ?>
     <center><table border="1">
-    <tr><td colspan="2"><center><h3>Upravit uživatele</h3></center></td></tr>
     <tr>
     	<td>Jméno:</td>
-	    <td><input type="text" name="jmeno" value="<?php echo $DB_Jmeno; ?>"></td>
+	    <td><input type="text" name="jmeno" size="20" value="<?php echo $DB_Jmeno; ?>"></td>
     </tr>
 
     <tr>
     	<td>Příjmení:</td>
-	    <td><input type="text" name="prijmeni" value="<?php echo $DB_Prijmeni; ?>"></td>
+	    <td><input type="text" name="prijmeni" size="20" value="<?php echo $DB_Prijmeni; ?>"></td>
     </tr>
 
     <tr>
     	<td>Rodné číslo:</td>
-	    <td><input type="text" name="RC" value="<?php echo $DB_RC; ?>"></td>
+	    <td><input type="text" name="RC" size="20" value="<?php echo $DB_RC; ?>"></td>
     </tr>
 
     <tr>
     	<td>Login:</td>
-	    <td><input type="text" name="login" value="<?php echo $DB_Login; ?>"></td>
-    </tr>
-
-    <tr>
-    	<td>Heslo:</td>
-	    <td><input type="text" name="heslo" value="<?php echo $DB_Heslo; ?>"></td>
+	    <td><input type="text" name="login" size="20" value="<?php echo $DB_Login; ?>"></td>
     </tr>
     
     <tr>
 	    <td>Zařazení:</td>
 	    <td>
-		    <select name="zarazeni">
-		    	<option value='Akademicky pracovnik'>Akademický pracovník</option><br>
-		    	<option value='Administrator'>Administrátor</option><br>
+		    <select name="zarazeni" style="width: 173px">
+		    <?php
+		    	optionSelect($DB_Zarazeni);
+	    	?>
 	    	</select>
 	    </td>
 	</tr>
 	
-	<tr>
-		<td colspan="2"><center><input type="submit" name="submit" value="Upravit"></center></td>
-	</tr>
 	</table></center>
+	<br>
+	<center><input type="submit" name="submit" value="Upravit uživatele"></center>
     </form>
 
 
     <!-- -->
-    <?php
-   		echo "</br>";
-		print_r($_SESSION);
-  	?>
+    <br>
+    </div>
+   		<div id="footer">
+   		Vytvořil Milan Gardáš a Filip Pobořil&nbsp;
+		</div>
+   	</div>
   </body>
 </html>

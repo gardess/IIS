@@ -12,23 +12,34 @@ header('Content-type: text/html; charset=utf-8');
 <html>
   <head>
     <title>Informační systém - Učebny</title>
-    
-    <meta charset="UTF-8">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="styl.css" />
   </head>
     
   <body>  
-    <h1>Administrace</h1>
-    <?php
-      include "menu.php";
-      echo "Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni'];
-      showMenu($_SESSION['Zarazeni']);
+    <div id="wrapper">
+        <div id="header">
+        <h1>&nbsp;Učebny</h1>
+      </div>
+      <?php
+        if ((($_SESSION['Zarazeni']) == "Administrator") || (($_SESSION['Zarazeni']) == "Akademicky pracovnik"))
+        echo "<div id=\"prihlasen\">Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni']."&nbsp;</div>";
+
+        connectDB();
+        include "menu.php";
+      showMenu();
       administraceMenu();
       ?>
+    <div id="telo"> 
+    <h2 class="nadpis">Administrace</h2>
+    <center>Vyberte si jakou kategorii chcete spravovat.</center>
+    <br>
       
 
-    <?php
-      echo "</br>";
-      print_r($_SESSION);
-    ?>
+    </div>
+      <div id="footer">
+      Vytvořil Milan Gardáš a Filip Pobořil&nbsp;
+    </div>
+    </div>
   </body>
 </html>

@@ -76,18 +76,25 @@ header('Content-type: text/html; charset=utf-8');
 <html>
 	<head>
 		<title>Informační systém - Učebny</title>
-		
-		<meta charset="UTF-8">
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+    	<link rel="stylesheet" type="text/css" href="styl.css" />
 	</head>
 	  
 	<body>  
-		<h1>Správa uživatelů</h1>
-		<?php
-			include "menu.php";
-			echo "Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni'];
-			showMenu($_SESSION['Zarazeni']);
-			administraceMenu();
-	    ?>
+  <div id="wrapper">
+        <div id="header">
+    		<h1>&nbsp;Učebny</h1>
+    	</div>
+    <?php
+    
+    	echo "<div id=\"prihlasen\">Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni']."&nbsp;</div>";
+		include "menu.php";
+		showMenu();
+		administraceMenu();
+    ?>
+    <!-- -->
+    <div id="telo">	
+		<h2 class="nadpis">Seznam uživatelů</h2>
 	    <!-- Zobrazeni tabulky s uzivateli -->
 	    <?php
   	
@@ -97,11 +104,16 @@ header('Content-type: text/html; charset=utf-8');
 				    if(mysql_num_rows($result) == 0) // nemůže nikdy nastat
 				    {
 				    	echo "<center><h3>Neexistuje žádný Akademicky pracovnik!</h3></center>";
+				    	echo "
+				    		</div>
+		   					<div id=\"footer\">
+		   						Vytvořil Milan Gardáš a Filip Pobořil&nbsp;
+						</div>";
 				    	return false;
 				    }
-				    echo "<center><h2>Seznam uživatelů</h2>";
+				    echo "<center>";
 				    echo "<table border=\"1\"><form method=\"post\"";
-				    echo "<tr><td>ID</td><td>Jméno</td><td>Příjmení</td><td>Rodné číslo</td><td>Funkce</td></tr>";
+				    echo "<tr><td></td><td>Jméno</td><td>Příjmení</td><td>Rodné číslo</td><td>Funkce</td></tr>";
 				    while($record = MySQL_Fetch_Array($result))
 				    {
 				    	$aa = $record['ID'];
@@ -109,20 +121,22 @@ header('Content-type: text/html; charset=utf-8');
 				        $b = $record['Prijmeni'];
 				        $c = $record['Rodne_cislo'];   
 				        $d = $record['Zarazeni'];     
-				      	echo "<tr><td><input type=\"radio\" name=\"vyber\" value=\"$aa\">$aa</td><td>$a</td><td>$b</td><td>$c</td><td>$d</td></tr>";
+				      	echo "<tr><td><input type=\"radio\" name=\"vyber\" value=\"$aa\"></td><td>$a</td><td>$b</td><td>$c</td><td>$d</td></tr>";
 
 				    }
-				    echo "<tr><td colspan=\"7\"><center>
-				    	<input type=\"submit\" name=\"pridat_button\" value=\"Přidat\">
-				    	<input type=\"submit\" name=\"upravit_button\" value=\"Upravit\">
-				    	<input type=\"submit\" name=\"odebrat_button\" value=\"Odebrat\">
-				    	</center></td></tr>";
-				    echo "</table></center>";
+				    
+				    echo "</table><br>";
+				    echo "<input type=\"submit\" name=\"pridat_button\" value=\"Přidat uživatele\">
+				    	<input type=\"submit\" name=\"upravit_button\" value=\"Upravit uživatele\">
+				    	<input type=\"submit\" name=\"odebrat_button\" value=\"Odebrat uživatele\">
+				    	</form></center>";
 		?>	
+		<br>
 	    <!-- -->
-		<?php
-			echo "</br>";
-			print_r($_SESSION);
-		?>
+		</div>
+   		<div id="footer">
+   		Vytvořil Milan Gardáš a Filip Pobořil&nbsp;
+		</div>
+   	</div>
 	</body>
 </html>

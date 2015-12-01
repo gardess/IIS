@@ -7,10 +7,10 @@ header('Content-type: text/html; charset=utf-8');
 	{
 		connectDB();
 		
-
+    $heslo1 = sha1($heslo);
     //$request = "insert into rezervace(Datum_pridani, Cas_pridani, Oznaceni, Rodne_cislo, Zkratka, Jednorazova) values('$datum','$cas','$ozn','$RC','$zkr','$jed')";
 		$sql = "UPDATE akademicky_pracovnik SET 
-		heslo='$heslo'
+		heslo='$heslo1'
 		WHERE Rodne_cislo ='".$_SESSION['Rodne_cislo']."' ";
 		if(!mysql_query($sql))
 		{
@@ -46,19 +46,23 @@ header('Content-type: text/html; charset=utf-8');
 <html>
   <head>
     <title>Informační systém - Učebny</title>
-    <meta http-equiv="content-type" 
-    content="text/html; charset=utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="styl.css" />
   </head>
   
   <body>  
-    <h1>Rezervace - UPRAVIT</h1>
-     <?php
-    	echo "Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni'];
+  <div id="wrapper">
+        <div id="header">
+    		<h1>&nbsp;Učebny</h1>
+    	</div>
+    <?php
+    
+    	echo "<div id=\"prihlasen\">Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni']."&nbsp;</div>";
 		include "menu.php";
 		showMenu($_SESSION['Zarazeni']);
-		
-  	?>
-    
+    ?>
+    <div id="telo">	
+		<h2 class="nadpis">Změna hesla</h2>
   	<?php
   		connectDB();
   		$req = "SELECT * FROM akademicky_pracovnik WHERE Rodne_cislo ='".$_SESSION['Rodne_cislo']."' ";
@@ -80,22 +84,20 @@ header('Content-type: text/html; charset=utf-8');
         	if (upravUdaje($_POST['heslo1']))
             {
             	;
-            }//echo "Předmět přidán.<br>";
+            }
             else
             {
             	;
-            }//echo "Předmět se nepodařilo přidat!<br>";
+            }
 		}
 		else
 		{
 			echo "Zadaná hesla nejsou stejná.";
 		}
 	}
-    //$script_url = "rezervace.php";
     $script_url = $_SERVER['PHP_SELF'];   
       echo "<form action='$script_url' method='post'>"; ?>
     <center><table border="1">
-    <tr><td colspan="2"><center><h3>Změna hesla</h3></center></td></tr>
     <tr>
     	<td>Nové heslo:</td>
 	    <td><input type="password" name="heslo1" value=""></td>
@@ -116,9 +118,11 @@ header('Content-type: text/html; charset=utf-8');
 
 
     <!-- -->
-    <?php
-   		echo "</br>";
-		print_r($_SESSION);
-  	?>
+    <br>
+    </div>
+   		<div id="footer">
+   		Vytvořil Milan Gardáš a Filip Pobořil&nbsp;
+		</div>
+   	</div>
   </body>
 </html>

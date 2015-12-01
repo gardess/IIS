@@ -35,20 +35,72 @@ header('Content-type: text/html; charset=utf-8');
 		}
 	}
 
-	function getUsersOptions($tabulka, $PK)
+function getUsersOptions($tabulka, $PK, $ucebna)
 	{
 		connectDB();
+	    
 		$result = mysql_query("select * from $tabulka");
 		$i = 0;
 		while($record = MySQL_Fetch_Array($result))
 		{
 			$zkratka = $record[$PK];
-			echo "<option value='$zkratka'>";
+			if ($zkratka == $ucebna)
+			{
+				echo "<option value='$zkratka' selected='selected'>";
+			}
+			else
+			{
+				echo "<option value='$zkratka'>";
+			}
 			echo "$zkratka";
 			echo "</option><br>";
 			$i++;
 		}
 	}
+
+function optionSelect($typ)
+{
+	if ($typ == 'Přednáška')
+	{
+		echo "
+		<option value='Přednáška' selected='selected'>Přednáška</option><br>
+        <option value='Cvičení'>Cvičení</option><br>
+        <option value='Demonstrační cvičení'>Demonstrační cvičení</option><br>
+        <option value='Zkouška'>Zkouška</option><br>";
+	}
+	else if ($typ == 'Cvičení')
+	{
+		echo "
+		<option value='Přednáška'>Přednáška</option><br>
+        <option value='Cvičení' selected='selected'>Cvičení</option><br>
+        <option value='Demonstrační cvičení'>Demonstrační cvičení</option><br>
+        <option value='Zkouška'>Zkouška</option><br>";
+	}
+	else if ($typ == 'Demonstrační cvičení')
+	{
+		echo "
+		<option value='Přednáška'>Přednáška</option><br>
+        <option value='Cvičení'>Cvičení</option><br>
+        <option value='Demonstrační cvičení' selected='selected'>Demonstrační cvičení</option><br>
+        <option value='Zkouška'>Zkouška</option><br>";
+	}
+	elseif ($typ == 'Zkouška')
+	{
+		echo "
+		<option value='Přednáška'>Přednáška</option><br>
+        <option value='Cvičení'>Cvičení</option><br>
+        <option value='Demonstrační cvičení'>Demonstrační cvičení</option><br>
+        <option value='Zkouška' selected='selected'>Zkouška</option><br>";
+	}
+}
+
+
+
+		
+
+
+
+
 ?>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
@@ -56,18 +108,38 @@ header('Content-type: text/html; charset=utf-8');
 <html>
   <head>
     <title>Informační systém - Učebny</title>
-    <meta http-equiv="content-type" 
-    content="text/html; charset=utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="styl.css" />
+
+    <link rel="stylesheet" type="text/css" media="all" href="js/jsDatePick_ltr.min.css" />
+		<script type="text/javascript" src="js/jsDatePick.min.1.3.js"></script>
+		<script type="text/javascript">
+			window.onload = function()
+			{
+				new JsDatePick(
+				{
+					useMode:2,
+					target:"inputField",
+					dateFormat:"%Y-%m-%d"
+				});
+			};
+		</script>
   </head>
   
   <body>  
-    <h1>Rezervace - UPRAVIT</h1>
-     <?php
-    	echo "Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni'];
-		include "menu.php";
-		showMenu($_SESSION['Zarazeni']);
-		
-  	?>
+    <div id="wrapper">
+        <div id="header">
+    		<h1>&nbsp;Učebny</h1>
+    	</div>
+    	<?php
+    		if ((($_SESSION['Zarazeni']) == "Administrator") || (($_SESSION['Zarazeni']) == "Akademicky pracovnik"))
+    		echo "<div id=\"prihlasen\">Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni']."&nbsp;</div>";
+		    connectDB();
+		    include "menu.php";
+			showMenu();
+			?>
+		<div id="telo">	
+		<h2 class="nadpis">Upravení rezervace</h2>
     
   	<?php
   		connectDB();
@@ -81,7 +153,7 @@ header('Content-type: text/html; charset=utf-8');
     	   	$DB_DatumR = $rec['Datum'];
     	   	$DB_CasR = $rec['Cas'];
     	   	$DB_DelkaR = $rec['Delka'];
-
+    	   	$DB_Typ = $rec['Typ'];
     	}
     	
   	?>
@@ -100,13 +172,12 @@ header('Content-type: text/html; charset=utf-8');
     $script_url = $_SERVER['PHP_SELF'];   
       echo "<form action='$script_url' method='post'>"; ?>
     <center><table border="1">
-    <tr><td colspan="2"><center><h3>Upravit Rezervaci</h3></center></td></tr>
     <tr>
     	<td>Ucebna:</td>
 	    <td>
-		    <select name="ucebna">
+		    <select name="ucebna" style="width: 173px">
 		    <?php 
-		      getUsersOptions('ucebna', 'Oznaceni');
+		      getUsersOptions('ucebna', 'Oznaceni', $DB_Oznaceni);
 		    ?>
 		    </select>
 	    </td>
@@ -117,33 +188,32 @@ header('Content-type: text/html; charset=utf-8');
     <tr>
 	    <td>Zkratka predmetu:</td>
 	    <td>
-		    <select name="zkratka">
+		    <select name="zkratka" style="width: 173px">
 		    <?php 
-		      getUsersOptions('predmet', 'Zkratka');
+		      getUsersOptions('predmet', 'Zkratka', $DB_Zkratka);
 		    ?>
 		    </select>
 	    </td>
 	</tr>
 	<tr>
 		<td>Datum:</td>
-		<td><input type="text" name="datumR" value="<?php echo $DB_DatumR; ?>"></td>
+		<td><input type="text" name="datumR" size="20" id="inputField" value="<?php echo $DB_DatumR; ?>"></td>
 	</tr>
 	<tr>
 		<td>Cas:</td>
-		<td><input type="text" name="casR" value="<?php echo $DB_CasR; ?>"></td>
+		<td><input type="text" name="casR" size="17" value="<?php echo $DB_CasR; ?>">:00</td>
 	</tr>
 	<tr>
 		<td>Delka:</td>
-		<td><input type="text" name="delkaR" value="<?php echo $DB_DelkaR; ?>"></td>
+		<td><input type="text" name="delkaR" size="16" value="<?php echo $DB_DelkaR; ?>">hod</td>
 	</tr>
 
 	<tr>
       <td>Typ výuky:<td>
-      <select name="typ">
-          <option value='Přednáška'>Přednáška</option><br>
-          <option value='Cvičení'>Cvičení</option><br>
-          <option value='Demonstrační cvičení'>Demonstrační cvičení</option><br>
-          <option value='Zkouška'>Zkouška</option><br>
+      	<select name="typ" style="width: 173px">
+      	<?php
+        	optionSelect($DB_Typ);
+        ?>
         </select>
 
     <tr>
@@ -155,17 +225,20 @@ header('Content-type: text/html; charset=utf-8');
 													echo $datum;
 													?>">
 	<input type="hidden" name="cas" / value="<?php echo $cas; ?>" />
-	<tr>
-		<td colspan="2"><center><input type="submit" name="submit" value="Upravit"></center></td>
-	</tr>
+
+	
 	</table></center>
+	<br>
+	<center><input type="submit" name="submit" value="Upravit rezervaci"></center>
     </form>
 
 
+    <br>
     <!-- -->
-    <?php
-   		echo "</br>";
-		print_r($_SESSION);
-  	?>
+    </div>
+   		<div id="footer">
+   		Vytvořil Milan Gardáš a Filip Pobořil&nbsp;
+		</div>
+   	</div>
   </body>
 </html>

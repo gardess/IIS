@@ -49,16 +49,24 @@ header('Content-type: text/html; charset=utf-8');
 	<head>
 		<title>Informační systém - Učebny</title>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+    	<link rel="stylesheet" type="text/css" href="styl.css" />
 	</head>
   
 	<body>  
-		<h1>Vytvoření učebny</h1>
-		<?php
-			echo "Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni'];
-			include "menu.php";
-			showMenu($_SESSION['Zarazeni']);
+    <div id="wrapper">
+        <div id="header">
+    		<h1>&nbsp;Učebny</h1>
+    	</div>
+    	<?php
+    		if ((($_SESSION['Zarazeni']) == "Administrator") || (($_SESSION['Zarazeni']) == "Akademicky pracovnik"))
+    		echo "<div id=\"prihlasen\">Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni']."&nbsp;</div>";
+		    connectDB();
+		    include "menu.php";
+			showMenu();
 			administraceMenu();
-		?>
+			?>
+		<div id="telo">	
+		<h2 class="nadpis">Vytvoření učebny</h2>
 
     <!-- Formulář pro vytvoření nového uživatele -->
     <?php
@@ -73,38 +81,39 @@ header('Content-type: text/html; charset=utf-8');
     $script_url = $_SERVER['PHP_SELF'];   
       echo "<form action='$script_url' method='post'>"; ?>
     <center><table border="1">
-    <tr><td colspan="2"><center><h3>Přidat učebnu</h3></center></td></tr>
     <tr>
     	<td>Označení:</td>
-	    <td><input type="text" name="oznaceni"></td>
+	    <td><input type="text" size="20" name="oznaceni"></td>
     </tr>
 
     <tr>
     	<td>Číslo místnosti:</td>
-	    <td><input type="text" name="cislo"></td>
+	    <td><input type="text" size="20" name="cislo"></td>
     </tr>
 
 	<tr>
     	<td>Budova:</td>
-	    <td><input type="text" name="budova"></td>
+	    <td><input type="text" size="20" name="budova"></td>
     </tr>
 
     <tr>
     	<td>Kapacita:</td>
-	    <td><input type="text" name="kapacita"></td>
+	    <td><input type="text" size="20" name="kapacita"></td>
     </tr>
 
-	<tr>
-		<td colspan="2"><center><input type="submit" name="submit" value="Přidat"></center></td>
-	</tr>
-	</table></center>
+	</table>
+	<br>
+	<center><input type="submit" name="submit" value="Přidat učebnu"></center>
+	</center>
     </form>
 
 
     <!-- -->
-    <?php
-   		echo "</br>";
-		print_r($_SESSION);
-  	?>
+    <br>
+    </div>
+   		<div id="footer">
+   		Vytvořil Milan Gardáš a Filip Pobořil&nbsp;
+		</div>
+   	</div>
   </body>
 </html>

@@ -7,22 +7,54 @@ if (!isset($_SESSION['logged']))
 	$_SESSION['Zarazeni'] = "null";
 }
 
-function getUsersOptions($tabulka, $PK)
+function optionSelect($rocnik)
+{
+	if ($rocnik == '1BIT')
 	{
-		connectDB();
-	    
-		$result = mysql_query("select * from $tabulka");
-		$i = 0;
-		while($record = MySQL_Fetch_Array($result))
-		{
-			$zkratka = $record[$PK];
-			echo "<option value='$zkratka'>";
-			echo "$zkratka";
-			echo "</option><br>";
-			$i++;
-		}
+		echo "
+		<option value='1BIT' selected='selected'>1BIT</option><br>
+		<option value='2BIT'>2BIT</option><br>
+		<option value='3BIT'>3BIT</option><br>
+		<option value='1MIT'>1MIT</option><br>
+		<option value='2MIT'>2MIT</option><br>";
 	}
-
+	if ($rocnik == '2BIT')
+	{
+		echo "
+		<option value='1BIT'>1BIT</option><br>
+		<option value='2BIT' selected='selected'>2BIT</option><br>
+		<option value='3BIT'>3BIT</option><br>
+		<option value='1MIT'>1MIT</option><br>
+		<option value='2MIT'>2MIT</option><br>";
+	}
+	if ($rocnik == '3BIT')
+	{
+		echo "
+		<option value='1BIT'>1BIT</option><br>
+		<option value='2BIT'>2BIT</option><br>
+		<option value='3BIT' selected='selected'>3BIT</option><br>
+		<option value='1MIT'>1MIT</option><br>
+		<option value='2MIT'>2MIT</option><br>";
+	}
+	if ($rocnik == '1MIT')
+	{
+		echo "
+		<option value='1BIT'>1BIT</option><br>
+		<option value='2BIT'>2BIT</option><br>
+		<option value='3BIT'>3BIT</option><br>
+		<option value='1MIT' selected='selected'>1MIT</option><br>
+		<option value='2MIT'>2MIT</option><br>";
+	}
+	if ($rocnik == '2MIT')
+	{
+		echo "
+		<option value='1BIT'>1BIT</option><br>
+		<option value='2BIT'>2BIT</option><br>
+		<option value='3BIT'>3BIT</option><br>
+		<option value='1MIT'>1MIT</option><br>
+		<option value='2MIT' selected='selected'>2MIT</option><br>";
+	}
+}
 
 ?>
 <!-- Hlavní stránka - Výpis rozvrhu, který se zobrazuje všem -->
@@ -33,28 +65,47 @@ function getUsersOptions($tabulka, $PK)
 	<head>
     	<title>Informační systém - Učebny</title>
     	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+    	<link rel="stylesheet" type="text/css" href="styl.css" />
+
+    	<link rel="stylesheet" type="text/css" media="all" href="js/jsDatePick_ltr.min.css" />
+		<script type="text/javascript" src="js/jsDatePick.min.1.3.js"></script>
+		<script type="text/javascript">
+			window.onload = function()
+			{
+				new JsDatePick(
+				{
+					useMode:2,
+					target:"inputField",
+					dateFormat:"%Y-%m-%d"
+				});
+			};
+		</script>
   	</head>
   
   	<body>  
-    	<h1>Informační systém - Učebny</h1>
+    <div id="wrapper">
+        <div id="header">
+    		<h1>&nbsp;Učebny</h1>
+    	</div>
     	<?php
     		if ((($_SESSION['Zarazeni']) == "Administrator") || (($_SESSION['Zarazeni']) == "Akademicky pracovnik"))
-    		echo "Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni'];
-      		//include "login.php";
+    		echo "<div id=\"prihlasen\">Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni']."&nbsp;</div>";
 		    include "database.php";
 		    connectDB();
-		    //echo $_SERVER['PHP_SELF'];
-		    //$typUzivatele = prihlaseni();
 		    include "menu.php";
 			showMenu();
-			rozvrhMenu()
+			rozvrhMenu();
+			$datum = date("Y-m-d");
 			?>
 
+		<div id="telo">	
+		<h2 class="nadpis">Rozvrh ročníků</h2>
 		<?php
 			if(isset($_POST['rocnik']))
 			{
 				$vybranyRocnik = $_POST['rocnik'];
 				$vybraneDatum = $_POST['datum'];
+				$datum = $vybraneDatum;
 			}
 			else
 			{
@@ -67,23 +118,21 @@ function getUsersOptions($tabulka, $PK)
 		<?php
 			echo "<form method='post'>";
 		?>
-    		</br><center><table border="1">
+    		<center><table>
     			<tr>
-    				<td>Zvol předmět:</td>
+    				<td>Zvol ročník:</td>
     				<td>
-	    				<select name="rocnik">
-					    	<option value='1BIT'>1BIT</option><br>
-					    	<option value='2BIT'>2BIT</option><br>
-					    	<option value='3BIT'>3BIT</option><br>
-					    	<option value='1MIT'>1MIT</option><br>
-					    	<option value='2MIT'>2MIT</option><br>
+	    				<select name="rocnik" style="width: 103px">
+	    					<?php
+	    						optionSelect($vybranyRocnik)
+	    					?>
 		    			</select>
 					</td>
 				</tr>
 				<tr>
     				<td>Zvol datum:</td>
     				<td>
-	    				<input type="text" name="datum" value="<?php echo date("Y-m-d"); ?>">
+	    				<input type="text" name="datum" size="10" id="inputField" value="<?php echo $datum; ?>">
 					</td>
 				</tr>
 				<tr>
@@ -104,7 +153,12 @@ function getUsersOptions($tabulka, $PK)
       		$result=mysql_query($sql);
       		if(mysql_num_rows($result) == 0)
 		    {
-		    	echo "<center><h3>Není zadána žádná rezervace!</h3></center>";
+		    	echo "<center><h3>Není zadána žádná rezervace ročníku ". $vybranyRocnik . " dne " . $vybraneDatum . "!</h3></center>";
+		    	echo "
+		    		</div>
+   					<div id=\"footer\">
+   						Vytvořil Milan Gardáš a Filip Pobořil&nbsp;
+				</div>";
 		    	return false;
 		    }
 		    echo "<center><h2>Rozvrh pro ročník ". $vybranyRocnik ." dne ". $vybraneDatum ."</h2></center>";
@@ -113,7 +167,7 @@ function getUsersOptions($tabulka, $PK)
 		    $barvaDemoCviceni = "CCFFFF";
 		    $barvaZkouska = "FFFFCC";
 		    echo " <center>
-			   		<table border=\"1\">
+			   		<table border=\"1\" class=\"test\">
 			   			<tr>
 			   				<td> 0:00</td>
 			   				<td> 1:00</td>
@@ -215,9 +269,12 @@ function getUsersOptions($tabulka, $PK)
 		    	echo "</tr>";
 
 		    }
-		    echo "</table></center>";
-		    echo "</br>";
-		    print_r($_SESSION);
-   		?>  
+		    echo "</table></center></br>";
+		?>  
+   		</div>
+   		<div id="footer">
+   		Vytvořil Milan Gardáš a Filip Pobořil&nbsp;
+		</div>
+   	</div>
   	</body>
 </html>

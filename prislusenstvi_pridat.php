@@ -49,16 +49,38 @@ header('Content-type: text/html; charset=utf-8');
 	<head>
 		<title>Informační systém - Učebny</title>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+    	<link rel="stylesheet" type="text/css" href="styl.css" />
+
+    	<link rel="stylesheet" type="text/css" media="all" href="js/jsDatePick_ltr.min.css" />
+		<script type="text/javascript" src="js/jsDatePick.min.1.3.js"></script>
+		<script type="text/javascript">
+			window.onload = function()
+			{
+				new JsDatePick(
+				{
+					useMode:2,
+					target:"inputField",
+					dateFormat:"%Y-%m-%d"
+				});
+			};
+		</script>
 	</head>
   
 	<body>  
-		<h1>Vytvoření příslušenství</h1>
-		<?php
-			echo "Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni'];
-			include "menu.php";
-			showMenu($_SESSION['Zarazeni']);
+    <div id="wrapper">
+        <div id="header">
+    		<h1>&nbsp;Učebny</h1>
+    	</div>
+    	<?php
+    		if ((($_SESSION['Zarazeni']) == "Administrator") || (($_SESSION['Zarazeni']) == "Akademicky pracovnik"))
+    		echo "<div id=\"prihlasen\">Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni']."&nbsp;</div>";
+		    connectDB();
+		    include "menu.php";
+			showMenu();
 			administraceMenu();
-		?>
+			?>
+		<div id="telo">	
+		<h2 class="nadpis">Vytvoření příslušenství</h2>
 
     <!-- Formulář pro vytvoření nového uživatele -->
     <?php
@@ -74,16 +96,23 @@ header('Content-type: text/html; charset=utf-8');
     $script_url = $_SERVER['PHP_SELF'];   
       echo "<form action='$script_url' method='post'>"; ?>
     <center><table border="1">
-    <tr><td colspan="2"><center><h3>Přidat příslušenství</h3></center></td></tr>
     <tr>
     	<td>Název:</td>
-	    <td><input type="text" name="nazev"></td>
+	    <td>
+	    	<select name="nazev" style="width: 173px">
+			    	<option value='Projektor'>Projektor</option><br>
+			    	<option value='Tabule'>Tabule</option><br>
+			    	<option value='Židle'>Židle</option><br>
+			    	<option value='Kamera'>Kamera</option><br>
+			    	<option value='Interaktivní tabule'>Interaktivní tabule</option><br>
+		    </select>
+		</td>
     </tr>
 
     <tr>
     	<td>Místnost:</td>
 	    <td>
-		    <select name="mistnost">
+		    <select name="mistnost" style="width: 173px">
 		    <?php 
 		      getUsersOptions('ucebna', 'Oznaceni');
 		    ?>
@@ -93,30 +122,30 @@ header('Content-type: text/html; charset=utf-8');
 
 	<tr>
     	<td>Pořizovací cena:</td>
-	    <td><input type="text" name="cena"></td>
+	    <td><input type="text" name="cena" size="20"></td>
     </tr>
 
     <tr>
     	<td>Datum pořízení:</td>
-	    <td><input type="text" name="datum"></td>
+	    <td><input type="text" name="datum" id="inputField" size="20"></td>
     </tr>
 
     <tr>
     	<td>Určení:</td>
-	    <td><input type="textarea" name="urceni"></td>
+	    <td><input type="text" name="urceni" size="20"></td>
     </tr>
 
-	<tr>
-		<td colspan="2"><center><input type="submit" name="submit" value="Přidat"></center></td>
-	</tr>
 	</table></center>
+	<br>
+	<center><input type="submit" name="submit" value="Přidat příslušenství"></center>
     </form>
 
-
+    <br>
     <!-- -->
-    <?php
-   		echo "</br>";
-		print_r($_SESSION);
-  	?>
+    </div>
+   		<div id="footer">
+   		Vytvořil Milan Gardáš a Filip Pobořil&nbsp;
+		</div>
+   	</div>
   </body>
 </html>

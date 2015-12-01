@@ -52,19 +52,38 @@ header('Content-type: text/html; charset=utf-8');
 <html>
   <head>
     <title>Informační systém - Učebny</title>
-    <meta http-equiv="content-type" 
-    content="text/html; charset=utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="styl.css" />
+
+    <link rel="stylesheet" type="text/css" media="all" href="js/jsDatePick_ltr.min.css" />
+    <script type="text/javascript" src="js/jsDatePick.min.1.3.js"></script>
+    <script type="text/javascript">
+      window.onload = function()
+      {
+        new JsDatePick(
+        {
+          useMode:2,
+          target:"inputField",
+          dateFormat:"%Y-%m-%d"
+        });
+      };
+    </script>
   </head>
   
-  <body>  
-    <h1>Rezervace</h1>
-     <?php
-    	echo "Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni'];
-		include "menu.php";
-		//include "login.php";
-		showMenu($_SESSION['Zarazeni']);
-		
-  	?>
+ <body>  
+    <div id="wrapper">
+        <div id="header">
+        <h1>&nbsp;Učebny</h1>
+      </div>
+      <?php
+        if ((($_SESSION['Zarazeni']) == "Administrator") || (($_SESSION['Zarazeni']) == "Akademicky pracovnik"))
+        echo "<div id=\"prihlasen\">Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni']."&nbsp;</div>";
+        connectDB();
+        include "menu.php";
+      showMenu();
+      ?>
+    <div id="telo"> 
+    <h2 class="nadpis">Přidání rezervace</h2>
 
     <!-- Formulář pro zadání nové rezervace-->
     <?php
@@ -79,11 +98,10 @@ header('Content-type: text/html; charset=utf-8');
     $script_url = $_SERVER['PHP_SELF'];   
       echo "<form action='$script_url' method='post'>"; ?>
     <center><table border="1">
-    <tr><td colspan="2"><center><h3>Přidat Rezervaci</h3></center></td></tr>
     <tr>
     	<td>Ucebna:</td>
 	    <td>
-		    <select name="ucebna">
+		    <select name="ucebna" style="width: 173px">
 		    <?php 
 		      getUsersOptions('ucebna', 'Oznaceni');
 		    ?>
@@ -96,7 +114,7 @@ header('Content-type: text/html; charset=utf-8');
     <tr>
 	    <td>Zkratka predmetu:</td>
 	    <td>
-		    <select name="zkratka">
+		    <select name="zkratka" style="width: 173px">
 		    <?php 
 		      getUsersOptions('predmet', 'Zkratka');
 		    ?>
@@ -105,20 +123,20 @@ header('Content-type: text/html; charset=utf-8');
 	</tr>
 	<tr>
 		<td>Datum:</td>
-		<td><input type="text" name="datumR">yyyy-mm--dd</td>
+		<td><input type="text" name="datumR" id="inputField" size="20" value="<?php echo date("Y-m-d"); ?>"></td>
 	</tr>
   <tr>
     <td>Čas:</td>
-    <td><input type="text" name="casR">:00</td>
+    <td><input type="text" name="casR" size="17">:00</td>
   </tr>
   <tr>
     <td>Délka:</td>
-    <td><input type="text" name="delkaR"></td>
+    <td><input type="text" name="delkaR" size="16">hod</td>
   </tr>
 
   <tr>
       <td>Typ výuky:<td>
-      <select name="typ">
+      <select name="typ" style="width: 173px">
           <option value='Přednáška'>Přednáška</option><br>
           <option value='Cvičení'>Cvičení</option><br>
           <option value='Demonstrační cvičení'>Demonstrační cvičení</option><br>
@@ -134,17 +152,17 @@ header('Content-type: text/html; charset=utf-8');
 													echo $datum;
 													?>">
 	<input type="hidden" name="cas" / value="<?php echo $cas; ?>" />
-	<tr>
-		<td colspan="2"><center><input type="submit" name="submit" value="Přidat"></center></td>
-	</tr>
 	</table></center>
+  <br>
+  <center><input type="submit" name="submit" value="Přidat rezervaci"></center>
     </form>
 
-
+<br>
     <!-- -->
-    <?php
-   		echo "</br>";
-		print_r($_SESSION);
-  	?>
+    </div>
+      <div id="footer">
+      Vytvořil Milan Gardáš a Filip Pobořil&nbsp;
+    </div>
+    </div>
   </body>
 </html>

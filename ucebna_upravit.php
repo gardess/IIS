@@ -54,19 +54,25 @@ header('Content-type: text/html; charset=utf-8');
 <html>
   <head>
     <title>Informační systém - Učebny</title>
-    <meta http-equiv="content-type" 
-    content="text/html; charset=utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="styl.css" />
   </head>
   
   <body>  
-    <h1>Rezervace - UPRAVIT</h1>
-     <?php
-    	echo "Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni'];
-		include "menu.php";
-		showMenu($_SESSION['Zarazeni']);
-		administraceMenu();
-		
-  	?>
+    <div id="wrapper">
+        <div id="header">
+        <h1>&nbsp;Učebny</h1>
+      </div>
+      <?php
+        if ((($_SESSION['Zarazeni']) == "Administrator") || (($_SESSION['Zarazeni']) == "Akademicky pracovnik"))
+        echo "<div id=\"prihlasen\">Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni']."&nbsp;</div>";
+        connectDB();
+        include "menu.php";
+      showMenu();
+      administraceMenu();
+      ?>
+    <div id="telo"> 
+    <h2 class="nadpis">Upravení učebny</h2>
     
   	<?php
   		connectDB();
@@ -96,38 +102,39 @@ header('Content-type: text/html; charset=utf-8');
     $script_url = $_SERVER['PHP_SELF'];   
       echo "<form action='$script_url' method='post'>"; ?>
     <center><table border="1">
-    <tr><td colspan="2"><center><h3>Upravit učebnu</h3></center></td></tr>
     <tr>
     	<td>Označení:</td>
-	    <td><input type="text" name="oznaceni" value="<?php echo $DB_Oznaceni; ?>"></td>
+	    <td><input type="text" name="oznaceni" size="20" value="<?php echo $DB_Oznaceni; ?>"></td>
     </tr>
 
     <tr>
     	<td>Číslo místnosti:</td>
-	    <td><input type="text" name="cislo" value="<?php echo $DB_Cislo_Mistnosti; ?>"></td>
+	    <td><input type="text" name="cislo" size="20" value="<?php echo $DB_Cislo_Mistnosti; ?>"></td>
     </tr>
 
     <tr>
     	<td>Budova:</td>
-	    <td><input type="text" name="budova" value="<?php echo $DB_Budova; ?>"></td>
+	    <td><input type="text" name="budova" size="20" value="<?php echo $DB_Budova; ?>"></td>
     </tr>
 
     <tr>
     	<td>Kapacita:</td>
-	    <td><input type="text" name="kapacita" value="<?php echo $DB_Kapacita; ?>"></td>
+	    <td><input type="text" name="kapacita" size="20" value="<?php echo $DB_Kapacita; ?>"></td>
     </tr>
-	
-	<tr>
-		<td colspan="2"><center><input type="submit" name="submit" value="Upravit"></center></td>
-	</tr>
-	</table></center>
+
+	</table>
+  <br>
+  <center><input type="submit" name="submit" value="Upravit učebnu"></center>
+  </center>
     </form>
 
 
     <!-- -->
-    <?php
-   		echo "</br>";
-		print_r($_SESSION);
-  	?>
+    <br>
+    </div>
+      <div id="footer">
+      Vytvořil Milan Gardáš a Filip Pobořil&nbsp;
+    </div>
+    </div>
   </body>
 </html>

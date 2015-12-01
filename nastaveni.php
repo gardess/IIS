@@ -16,20 +16,24 @@ elseif (isset($_POST['heslo_button']))
 <html>
   <head>
     <title>Informační systém - Učebny</title>
-    <meta http-equiv="content-type" 
-    content="text/html; charset=utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="styl.css" />
   </head>
   
   <body>  
-    <h1>Profil</h1>
+  <div id="wrapper">
+        <div id="header">
+    		<h1>&nbsp;Učebny</h1>
+    	</div>
     <?php
     
-    echo "Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni'];
+    	echo "<div id=\"prihlasen\">Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni']."&nbsp;</div>";
 		include "menu.php";
-		//include "login.php";
 		showMenu($_SESSION['Zarazeni']);
     ?>
     <!-- -->
+    <div id="telo">	
+		<h2 class="nadpis">Profil</h2>
     <?php
   	
 		  	connectDB();
@@ -38,6 +42,11 @@ elseif (isset($_POST['heslo_button']))
 				    if(mysql_num_rows($result) == 0)
 				    {
 				    	echo "<center><h3>Neexistuje žádný Akademicky pracovnik!</h3></center>";
+				    	echo "
+				    		</div>
+		   					<div id=\"footer\">
+		   						Vytvořil Milan Gardáš a Filip Pobořil&nbsp;
+						</div>";
 				    	return false;
 				    }
 				    while($record = MySQL_Fetch_Array($result))
@@ -48,26 +57,26 @@ elseif (isset($_POST['heslo_button']))
 				        $d = $record['Login'];
 				        $e = $record['Zarazeni'];    
 				    }
-				    echo "<center><h2>Profil</h2>";
-				    echo "<table border=\"1\"><form method=\"post\"";
+				    echo "<center><table border=\"1\"><form method=\"post\"";
 				    //echo "<tr><td>ID</td><td>Jméno</td><td>Příjmení</td><td>Rodné číslo</td><td>Funkce</td></tr>";
 				    echo "
 				    <tr><td>Jméno</td><td>$a</td></tr>
 				    <tr><td>Příjmení</td><td>$b</td></tr>
-				    <tr><td>Rodné číslo</td><td>$c</td></tr>
+				    <tr><td>Rodné číslo&nbsp;</td><td>$c</td></tr>
 				    <tr><td>Login</td><td>$d</td></tr>
 				    <tr><td>Funkce</td><td>$e</td></tr>";
-				    
-				    echo "<tr><td colspan=\"7\"><center>
+				    echo "</table></center><br>";
+				    echo "<center>
 				    	<input type=\"submit\" name=\"upravit_button\" value=\"Změnit údaje\">
 				    	<input type=\"submit\" name=\"heslo_button\" value=\"Změnit heslo\">
-				    	</center></td></tr>";
-				    echo "</table></center>";
+				    	</center><br>";
+				    
 		?>	
     <!-- -->
-    <?php
-		echo "</br>";
-		print_r($_SESSION);
-  	?>
+    </div>
+   		<div id="footer">
+   		Vytvořil Milan Gardáš a Filip Pobořil&nbsp;
+		</div>
+   	</div>
   </body>
 </html>

@@ -7,7 +7,7 @@ if (!isset($_SESSION['logged']))
 	$_SESSION['Zarazeni'] = "null";
 }
 
-function getUsersOptions($tabulka, $PK)
+function getUsersOptions($tabulka, $PK, $predmet)
 	{
 		connectDB();
 	    
@@ -16,7 +16,14 @@ function getUsersOptions($tabulka, $PK)
 		while($record = MySQL_Fetch_Array($result))
 		{
 			$zkratka = $record[$PK];
-			echo "<option value='$zkratka'>";
+			if ($zkratka == $predmet)
+			{
+				echo "<option value='$zkratka' selected='selected'>";
+			}
+			else
+			{
+				echo "<option value='$zkratka'>";
+			}
 			echo "$zkratka";
 			echo "</option><br>";
 			$i++;
@@ -33,32 +40,50 @@ function getUsersOptions($tabulka, $PK)
 	<head>
     	<title>Informační systém - Učebny</title>
     	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+    	<link rel="stylesheet" type="text/css" href="styl.css" />
+
+    	<link rel="stylesheet" type="text/css" media="all" href="js/jsDatePick_ltr.min.css" />
+		<script type="text/javascript" src="js/jsDatePick.min.1.3.js"></script>
+		<script type="text/javascript">
+			window.onload = function()
+			{
+				new JsDatePick(
+				{
+					useMode:2,
+					target:"inputField",
+					dateFormat:"%Y-%m-%d"
+				});
+			};
+		</script>
   	</head>
   
   	<body>  
-    	<h1>Informační systém - Učebny</h1>
+    <div id="wrapper">
+        <div id="header">
+    		<h1>&nbsp;Učebny</h1>
+    	</div>
     	<?php
     		if ((($_SESSION['Zarazeni']) == "Administrator") || (($_SESSION['Zarazeni']) == "Akademicky pracovnik"))
-    		echo "Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni'];
-      		//include "login.php";
+    		echo "<div id=\"prihlasen\">Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni']."&nbsp;</div>";
 		    include "database.php";
 		    connectDB();
-		    //echo $_SERVER['PHP_SELF'];
-		    //$typUzivatele = prihlaseni();
 		    include "menu.php";
 			showMenu();
-			rozvrhMenu()
+			rozvrhMenu();
+			$datum = date("Y-m-d");
 			?>
-
+		<div id="telo">	
+		<h2 class="nadpis">Rozvrh předmětů</h2>
 		<?php
 			if(isset($_POST['predmet']))
 			{
 				$vybranyPredmet = $_POST['predmet'];
 				$vybraneDatum = $_POST['datum'];
+				$datum = $vybraneDatum;
 			}
 			else
 			{
-				$vybranyPredmet = "IIS";
+				$vybranyPredmet = "IMS";
 				$vybraneDatum = date("Y-m-d");
 			}
 		?>
@@ -67,13 +92,13 @@ function getUsersOptions($tabulka, $PK)
 		<?php
 			echo "<form method='post'>";
 		?>
-    		</br><center><table border="1">
+    		<center><table>
     			<tr>
     				<td>Zvol předmět:</td>
     				<td>
-	    				<select name="predmet">
+	    				<select name="predmet" style="width: 103px">
 		    				<?php
-						    	getUsersOptions("predmet","Zkratka");
+						    	getUsersOptions("predmet","Zkratka",$vybranyPredmet);
 							?>
 						</select>
 					</td>
@@ -81,7 +106,7 @@ function getUsersOptions($tabulka, $PK)
 				<tr>
     				<td>Zvol datum:</td>
     				<td>
-	    				<input type="text" name="datum" value="<?php echo date("Y-m-d"); ?>">
+	    				<input type="text" name="datum" size="10" id="inputField" value="<?php echo $datum; ?>">
 					</td>
 				</tr>
 				<tr>
@@ -101,7 +126,12 @@ function getUsersOptions($tabulka, $PK)
       		$result=mysql_query($sql);
       		if(mysql_num_rows($result) == 0)
 		    {
-		    	echo "<center><h3>Není zadána žádná rezervace!</h3></center>";
+		    	echo "<center><h3>Není zadána žádná rezervace předmětu ". $vybranyPredmet . " dne " . $vybraneDatum . "!</h3></center>";
+		    	echo "
+		    		</div>
+   					<div id=\"footer\">
+   						Vytvořil Milan Gardáš a Filip Pobořil&nbsp;
+				</div>";
 		    	return false;
 		    }
 		    echo "<center><h2>Rozvrh pro předmět ". $vybranyPredmet ." dne ". $vybraneDatum ."</h2></center>";
@@ -110,7 +140,7 @@ function getUsersOptions($tabulka, $PK)
 		    $barvaDemoCviceni = "CCFFFF";
 		    $barvaZkouska = "FFFFCC";
 		    echo " <center>
-			   		<table border=\"1\">
+			   		<table border =\"1\" class=\"test\">
 			   			<tr>
 			   				<td> 0:00</td>
 			   				<td> 1:00</td>
@@ -190,31 +220,19 @@ function getUsersOptions($tabulka, $PK)
 		    				$i = $i + $delka;
 		    				continue;
 		    			}
-		    			
-		    			//echo "<center>".$predmet."</br>".$rocnik."</br>".$jmeno." ".$prijmeni."</br>".$mistnost."</center></td>";
-		    			$i = $i + $delka;
+						$i = $i + $delka;
 		    			continue;
 		    		}
-		    		/*elseif ($prom == true)
-		    		{
-		    			continue;
-		    		}
-		    		elseif ($i == ($posun+$delka))
-		    		{
-		    			$prom = false;
-		    		}*/
-		    		
 		    			echo "<td></td>";
-		    		
 		    	}
-
-
 		    	echo "</tr>";
-
 		    }
-		    echo "</table></center>";
-		    echo "</br>";
-		    print_r($_SESSION);
-   		?>  
+		    echo "</table></center></br>";
+		?>  
+   		</div>
+   		<div id="footer">
+   		Vytvořil Milan Gardáš a Filip Pobořil&nbsp;
+		</div>
+   	</div>
   	</body>
 </html>

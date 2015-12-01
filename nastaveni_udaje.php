@@ -53,19 +53,25 @@ header('Content-type: text/html; charset=utf-8');
 <html>
   <head>
     <title>Informační systém - Učebny</title>
-    <meta http-equiv="content-type" 
-    content="text/html; charset=utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="styl.css" />
   </head>
   
   <body>  
-    <h1>Rezervace - UPRAVIT</h1>
-     <?php
-    	echo "Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni'];
-		include "menu.php";
-		showMenu($_SESSION['Zarazeni']);
-		
-  	?>
+  <div id="wrapper">
+        <div id="header">
+        <h1>&nbsp;Učebny</h1>
+      </div>
+    <?php
     
+      echo "<div id=\"prihlasen\">Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni']."&nbsp;</div>";
+    include "menu.php";
+    showMenu($_SESSION['Zarazeni']);
+    ?>
+    <!-- -->
+    <div id="telo"> 
+    <h2 class="nadpis">Změna údajů</h2>
+
   	<?php
   		connectDB();
   		$req = "SELECT * FROM akademicky_pracovnik WHERE Rodne_cislo ='".$_SESSION['Rodne_cislo']."' ";
@@ -121,11 +127,12 @@ header('Content-type: text/html; charset=utf-8');
 	</table></center>
     </form>
 
-
+    <br>
     <!-- -->
-    <?php
-   		echo "</br>";
-		print_r($_SESSION);
-  	?>
+    </div>
+      <div id="footer">
+      Vytvořil Milan Gardáš a Filip Pobořil&nbsp;
+    </div>
+    </div>
   </body>
 </html>

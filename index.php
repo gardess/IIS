@@ -7,7 +7,7 @@ if (!isset($_SESSION['logged']))
 	$_SESSION['Zarazeni'] = "null";
 }
 
-function getUsersOptions($tabulka, $PK)
+function getUsersOptions($tabulka, $PK, $ucebna)
 	{
 		connectDB();
 	    
@@ -16,7 +16,14 @@ function getUsersOptions($tabulka, $PK)
 		while($record = MySQL_Fetch_Array($result))
 		{
 			$zkratka = $record[$PK];
-			echo "<option value='$zkratka'>";
+			if ($zkratka == $ucebna)
+			{
+				echo "<option value='$zkratka' selected='selected'>";
+			}
+			else
+			{
+				echo "<option value='$zkratka'>";
+			}
 			echo "$zkratka";
 			echo "</option><br>";
 			$i++;
@@ -33,28 +40,46 @@ function getUsersOptions($tabulka, $PK)
 	<head>
     	<title>Informační systém - Učebny</title>
     	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+    	<link rel="stylesheet" type="text/css" href="styl.css" />
+
+    	<link rel="stylesheet" type="text/css" media="all" href="js/jsDatePick_ltr.min.css" />
+		<script type="text/javascript" src="js/jsDatePick.min.1.3.js"></script>
+		<script type="text/javascript">
+			window.onload = function()
+			{
+				new JsDatePick(
+				{
+					useMode:2,
+					target:"inputField",
+					dateFormat:"%Y-%m-%d"
+				});
+			};
+		</script>
   	</head>
   
   	<body>  
-    	<h1>Informační systém - Učebny</h1>
-    	<?php
-    		if ((($_SESSION['Zarazeni']) == "Administrator") || (($_SESSION['Zarazeni']) == "Akademicky pracovnik"))
-    		echo "Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni'];
-      		//include "login.php";
-		    include "database.php";
-		    connectDB();
-		    //echo $_SERVER['PHP_SELF'];
-		    //$typUzivatele = prihlaseni();
-		    include "menu.php";
-			showMenu();
-			rozvrhMenu()
+  	<div id="wrapper">
+        <div id="header">
+    		<h1>&nbsp;Učebny</h1>
+    	</div>
+	    	<?php
+	    		if ((($_SESSION['Zarazeni']) == "Administrator") || (($_SESSION['Zarazeni']) == "Akademicky pracovnik"))
+	    		echo "<div id=\"prihlasen\">Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni']."&nbsp;</div>";
+			    include "database.php";
+			    connectDB();
+			    include "menu.php";
+				showMenu();
+				rozvrhMenu();
+				$datum = date("Y-m-d");
 			?>
-
+		<div id="telo">	
+		<h2 class="nadpis">Rozvrh učeben</h2>
 		<?php
 			if(isset($_POST['ucebna']))
 			{
 				$vybranaUcebna = $_POST['ucebna'];
 				$vybraneDatum = $_POST['datum'];
+				$datum = $vybraneDatum;
 			}
 			else
 			{
@@ -62,18 +87,16 @@ function getUsersOptions($tabulka, $PK)
 				$vybraneDatum = date("Y-m-d");
 			}
 		?>
-
-
 		<?php
 			echo "<form method='post'>";
 		?>
-    		</br><center><table border="1">
+    		<center><table>
     			<tr>
     				<td>Zvol učebnu:</td>
     				<td>
-	    				<select name="ucebna">
+	    				<select name="ucebna" style="width: 103px">
 		    				<?php
-						    	getUsersOptions("ucebna","Oznaceni");
+						    	getUsersOptions("ucebna","Oznaceni",$vybranaUcebna);
 							?>
 						</select>
 					</td>
@@ -81,7 +104,8 @@ function getUsersOptions($tabulka, $PK)
 				<tr>
     				<td>Zvol datum:</td>
     				<td>
-	    				<input type="text" name="datum" value="<?php echo date("Y-m-d"); ?>">
+    					<input type="text" name="datum" size="10" id="inputField" value="<?php echo $datum; ?>" />
+	    				
 					</td>
 				</tr>
 				<tr>
@@ -89,19 +113,17 @@ function getUsersOptions($tabulka, $PK)
     			</tr>
     		</table></center>
     		</form></br>
-
-    	
-
-
-
-
     	<?php
-			
 			$sql="SELECT * FROM rezervace WHERE Oznaceni ='$vybranaUcebna' AND Datum ='$vybraneDatum'";
       		$result=mysql_query($sql);
       		if(mysql_num_rows($result) == 0)
 		    {
-		    	echo "<center><h3>Není zadána žádná rezervace!</h3></center>";
+		    	echo "<center><h3>Není zadána žádná rezervace učebny ". $vybranaUcebna . " dne " . $vybraneDatum . "!</h3></center>";
+		    	echo "
+		    		</div>
+   					<div id=\"footer\">
+   						Vytvořil Milan Gardáš a Filip Pobořil&nbsp;
+				</div>";
 		    	return false;
 		    }
 		    echo "<center><h2>Rozvrh pro učebnu ". $vybranaUcebna ." dne ". $vybraneDatum ."</h2></center>";
@@ -110,32 +132,32 @@ function getUsersOptions($tabulka, $PK)
 		    $barvaDemoCviceni = "CCFFFF";
 		    $barvaZkouska = "FFFFCC";
 		    echo " <center>
-			   		<table border=\"1\">
+			   		<table border=\"1\" class=\"test\">
 			   			<tr>
-			   				<td> 0:00</td>
-			   				<td> 1:00</td>
-			   				<td> 2:00</td>
-			   				<td> 3:00</td>
-			   				<td> 4:00</td>
-			   				<td> 5:00</td>
-			   				<td> 6:00</td>
-			   				<td> 7:00</td>
-			   				<td> 8:00</td>
-			   				<td> 9:00</td>
-			   				<td>10:00</td>
-			   				<td>11:00</td>
-			   				<td>12:00</td>
-			   				<td>13:00</td>
-			   				<td>14:00</td>
-			   				<td>15:00</td>
-			   				<td>16:00</td>
-			   				<td>17:00</td>
-			   				<td>18:00</td>
-			   				<td>19:00</td>
-			   				<td>20:00</td>
-			   				<td>21:00</td>
-			   				<td>22:00</td>
-			   				<td>23:00</td>
+			   				<td class=\"test\">0</td>
+			   				<td class=\"test\">1</td>
+			   				<td class=\"test\">2</td>
+			   				<td class=\"test\">3</td>
+			   				<td class=\"test\">4</td>
+			   				<td class=\"test\">5</td>
+			   				<td class=\"test\">6</td>
+			   				<td class=\"test\">7</td>
+			   				<td class=\"test\">8</td>
+			   				<td class=\"test\">9</td>
+			   				<td class=\"test\">10</td>
+			   				<td class=\"test\">11</td>
+			   				<td class=\"test\">12</td>
+			   				<td class=\"test\">13</td>
+			   				<td class=\"test\">14</td>
+			   				<td class=\"test\">15</td>
+			   				<td class=\"test\">16</td>
+			   				<td class=\"test\">17</td>
+			   				<td class=\"test\">18</td>
+			   				<td class=\"test\">19</td>
+			   				<td class=\"test\">20</td>
+			   				<td class=\"test\">21</td>
+			   				<td class=\"test\">22</td>
+			   				<td class=\"test\">23</td>
 			   			</tr>"; 
 		    while($record = MySQL_Fetch_Array($result))
 		    {
@@ -190,19 +212,9 @@ function getUsersOptions($tabulka, $PK)
 		    				$i = $i + $delka;
 		    				continue;
 		    			}
-		    			
-		    			//echo "<center>".$predmet."</br>".$rocnik."</br>".$jmeno." ".$prijmeni."</br>".$mistnost."</center></td>";
 		    			$i = $i + $delka;
 		    			continue;
 		    		}
-		    		/*elseif ($prom == true)
-		    		{
-		    			continue;
-		    		}
-		    		elseif ($i == ($posun+$delka))
-		    		{
-		    			$prom = false;
-		    		}*/
 		    		
 		    			echo "<td></td>";
 		    		
@@ -212,41 +224,16 @@ function getUsersOptions($tabulka, $PK)
 		    	echo "</tr>";
 
 		    }
-		    echo "</table></center>";
-		    /*$result = mysql_query("select * from rezervace");
+		    echo "</table></center></br>";
 		    
-		    if(mysql_num_rows($result) == 0)
-		    {
-		    	echo "<center><h3>Není zadána žádná rezervace!</h3></center>";
-		    	return false;
-		    }
-		    echo "<center><h2>Aktuální rezervace</h2>";
-		    echo "<table border=\"1\">";
-		    echo "<tr><td>ID</td><td>Učebna</td><td>Jméno a příjmení</td><td>Zkratka</td><td>Jednorázová</td><td>Datum přidání</td><td>Čas přidání</td></tr>";
-		    while($record = MySQL_Fetch_Array($result))
-		    {
-		    	$aa = $record['ID'];
-		        $a = $record['Oznaceni'];
-
-		        $b = $record['Rodne_cislo'];
-		        $res = mysql_query("SELECT * from akademicky_pracovnik where Rodne_cislo ='".$b."' ");
-		        	while($rec = MySQL_Fetch_Array($res))
-		        	{
-		        		$ba = $rec['Jmeno'];
-		        		$bb = $rec['Prijmeni'];
-		        	}
-		        $c = $record['Zkratka'];
-		        $d = $record['Jednorazova'];
-		        $e = $record['Datum_pridani'];
-		        $f = $record['Cas_pridani'];      
-		      	echo "<tr><td>$aa</td><td>$a</td><td>$ba $bb</td><td>$c</td><td>$d</td><td>$e</td><td>$f</td></tr>";
-		    }
-		    echo "</table></center>";*/
-
-
-		    echo "</br>";
-		    print_r($_SESSION);
    		?>  
+   		</div>
+   		<div id="footer">
+   		Vytvořil Milan Gardáš a Filip Pobořil&nbsp;
+   		
+		</div>
+   	</div>
+
    		
    		
 

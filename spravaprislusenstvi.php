@@ -75,18 +75,25 @@ header('Content-type: text/html; charset=utf-8');
 <html>
   <head>
     <title>Informační systém - Učebny</title>
-    
-    <meta charset="UTF-8">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="styl.css" />
   </head>
     
   <body>  
-    <h1>Správa učeben</h1>
-    <?php
-      include "menu.php";
-      echo "Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni'];
-      showMenu($_SESSION['Zarazeni']);
+    <div id="wrapper">
+        <div id="header">
+        <h1>&nbsp;Učebny</h1>
+      </div>
+      <?php
+        if ((($_SESSION['Zarazeni']) == "Administrator") || (($_SESSION['Zarazeni']) == "Akademicky pracovnik"))
+        echo "<div id=\"prihlasen\">Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni']."&nbsp;</div>";
+        connectDB();
+        include "menu.php";
+      showMenu();
       administraceMenu();
       ?>
+    <div id="telo"> 
+    <h2 class="nadpis">Správa příslušenství</h2>
       <!-- Zobrazeni tabulky s uzivateli -->
       <?php
     
@@ -96,9 +103,14 @@ header('Content-type: text/html; charset=utf-8');
             if(mysql_num_rows($result) == 0)
             {
               echo "<center><h3>Neexistuje žádná učebna!</h3></center>";
+              echo "
+                    </div>
+                    <div id=\"footer\">
+                      Vytvořil Milan Gardáš a Filip Pobořil&nbsp;
+                </div>";
               return false;
             }
-            echo "<center><h2>Seznam příslušenství</h2>";
+            echo "<center>";
             echo "<table border=\"1\"><form method=\"post\"";
             echo "<tr><td> </td><td>Inventární číslo</td><td>Název</td><td>Místnost</td><td>Pořizovací cena</td><td>Datum pořízení</td><td>Určení</td></tr>";
             while($record = MySQL_Fetch_Array($result))
@@ -110,19 +122,21 @@ header('Content-type: text/html; charset=utf-8');
                 $d = $record['Porizovaci_cena'];
                 $e = $record['Datum_porizeni'];
                 $f = $record['Urceni'];
-                echo "<tr><td><input type=\"radio\" name=\"vyber\" value=\"$a\"></td><td>$a</td><td>$b</td><td>$c</td><td>$d</td><td>$e</td><td>$f</td></tr>";
+                echo "<tr><td><input type=\"radio\" name=\"vyber\" value=\"$a\"></td><td>$a</td><td>$b</td><td>$c</td><td>$d Kč</td><td>$e</td><td>$f</td></tr>";
             }
-            echo "<tr><td colspan=\"7\"><center>
-              <input type=\"submit\" name=\"pridat_button\" value=\"Přidat\">
-              <input type=\"submit\" name=\"upravit_button\" value=\"Upravit\">
-              <input type=\"submit\" name=\"odebrat_button\" value=\"Odebrat\">
-              </center></td></tr>";
-            echo "</table></center>";
+            
+            echo "</table><br>
+              <input type=\"submit\" name=\"pridat_button\" value=\"Přidat příslušenství\">
+              <input type=\"submit\" name=\"upravit_button\" value=\"Upravit příslušenství\">
+              <input type=\"submit\" name=\"odebrat_button\" value=\"Odebrat příslušenství\">
+              </form></center>";
     ?>  
       <!-- -->
-    <?php
-      echo "</br>";
-      print_r($_SESSION);
-    ?>
+      <br>
+    </div>
+      <div id="footer">
+      Vytvořil Milan Gardáš a Filip Pobořil&nbsp;
+    </div>
+    </div>
   </body>
 </html>

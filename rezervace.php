@@ -90,19 +90,24 @@ function smazRezervaci($id, $RC)
 <html>
   <head>
     <title>Informační systém - Učebny</title>
-    <meta http-equiv="content-type" 
-    content="text/html; charset=utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="styl.css" />
   </head>
   
   <body>  
-    <h1>Rezervace</h1>
-     <?php
-    	echo "Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni'];
-		include "menu.php";
-		//include "login.php";
-		showMenu($_SESSION['Zarazeni']);
-		
-  	?>
+    <div id="wrapper">
+        <div id="header">
+    		<h1>&nbsp;Učebny</h1>
+    	</div>
+    	<?php
+    		if ((($_SESSION['Zarazeni']) == "Administrator") || (($_SESSION['Zarazeni']) == "Akademicky pracovnik"))
+    		echo "<div id=\"prihlasen\">Přihlášen uživatel: " . $_SESSION['Jmeno'] . " " . $_SESSION['Prijmeni']."&nbsp;</div>";
+		    connectDB();
+		    include "menu.php";
+			showMenu();
+			?>
+		<div id="telo">	
+		<h2 class="nadpis">Seznam rezervací</h2>
 
 
   	<?php
@@ -116,11 +121,16 @@ function smazRezervaci($id, $RC)
 		    	echo "<form method=\"post\"><center>";
 		    	echo "<input type=\"submit\" name=\"pridat_button\" value=\"Přidat rezervaci\">";
 		    	echo "</center></form>";
+		    	echo "</div>
+				   		<div id=\"footer\">
+				   		Vytvořil Milan Gardáš a Filip Pobořil&nbsp;
+						</div>
+				   	</div>";
 		    	return false;
 		    }
-		    echo "<center><h2>Aktuální rezervace</h2>";
+		    echo "<center>";
 		    echo "<form method=\"post\"><table border=\"1\">";
-		    echo "<tr><td>ID</td><td>Učebna</td><td>Jméno a příjmení</td><td>Předmět</td><td>Ročník</td><td>Typ výuky</td><td>Datum</td><td>Čas</td><td>Datum přidání</td><td>Čas přidání</td></tr>";
+		    echo "<tr><td></td><td>Učebna</td><td>Jméno a příjmení</td><td>Předmět</td><td>Ročník</td><td>Typ výuky</td><td>Datum</td><td>Čas</td><td>Datum přidání</td><td>Čas přidání</td></tr>";
 		    while($record = MySQL_Fetch_Array($result))
 		    {
 		    	$aa = $record['ID'];
@@ -147,23 +157,25 @@ function smazRezervaci($id, $RC)
 		        		$h = $recc['Rocnik'];
 		        	}
 		              
-		      	echo "<tr><td><input type=\"radio\" name=\"vyber\" value=\"$aa\">$aa</td><td>$a</td><td>$ba $bb</td><td>$c</td><td>$h</td><td>$typ</td><td>$d</td><td>$dd".":00 - ";
+		      	echo "<tr><td><input type=\"radio\" name=\"vyber\" value=\"$aa\"></td><td>$a</td><td>$ba $bb</td><td>$c</td><td>$h</td><td>$typ</td><td>$d</td><td>$dd".":00 - ";
 		      	echo $dd+$delka-1;
 		      	echo ":50</td><td>$e</td><td>$f</td></tr>";
 
 		    }
-		    echo "<tr><td colspan=\"10\"><center>
-		    	<input type=\"submit\" name=\"pridat_button\" value=\"Přidat\">
-		    	<input type=\"submit\" name=\"upravit_button\" value=\"Upravit\">
-		    	<input type=\"submit\" name=\"odebrat_button\" value=\"Odebrat\">
-		    	</center></td></tr>";
-		    echo "</table></form></center>";
+		    
+		    echo "</table>";
+		    echo " <br>
+		    	<input type=\"submit\" name=\"pridat_button\" value=\"Přidat rezervaci\">
+		    	<input type=\"submit\" name=\"upravit_button\" value=\"Upravit rezervaci\">
+		    	<input type=\"submit\" name=\"odebrat_button\" value=\"Odebrat rezervaci\">
+		    	</form></center>";
     ?>
     </br>
-    <?php
-   		echo "</br>";
-		print_r($_SESSION);
-  	?>
+    </div>
+   		<div id="footer">
+   		Vytvořil Milan Gardáš a Filip Pobořil&nbsp;
+		</div>
+   	</div>
   </body>
 </html>
 

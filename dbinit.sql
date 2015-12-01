@@ -35,7 +35,7 @@ CREATE TABLE akademicky_pracovnik (
     Jmeno VARCHAR(20) NOT NULL,
     Prijmeni VARCHAR(20) NOT NULL,
     Login VARCHAR(20) NOT NULL,
-    Heslo VARCHAR(20) NOT NULL,
+    Heslo VARCHAR(40) NOT NULL,
     Zarazeni VARCHAR(20) NOT NULL,
     PRIMARY KEY (Rodne_cislo),
     UNIQUE (ID)
@@ -70,9 +70,9 @@ CREATE TABLE rezervace (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci;  
 
 
-INSERT INTO akademicky_pracovnik (Rodne_Cislo, Jmeno, Prijmeni, Login, Heslo, Zarazeni) VALUES('9009213939', 'Al', 'Koholik', 'ap1', 'ap1', 'Akademicky pracovnik');
-INSERT INTO akademicky_pracovnik (Rodne_Cislo, Jmeno, Prijmeni, Login, Heslo, Zarazeni) VALUES('1234567890', 'Jarda', 'Jágr', 'admin', 'admin', 'Administrator');
-INSERT INTO akademicky_pracovnik (Rodne_Cislo, Jmeno, Prijmeni, Login, Heslo, Zarazeni) VALUES('1023456789', 'Petr', 'Bečka', 'ap2', 'ap2', 'Akademicky pracovnik'); 
+INSERT INTO akademicky_pracovnik (Rodne_Cislo, Jmeno, Prijmeni, Login, Heslo, Zarazeni) VALUES('9009213939', 'Al', 'Koholik', 'ap1', '6748fc724dd9947b41ba99bd1a9ed2d17f17422a', 'Akademicky pracovnik');
+INSERT INTO akademicky_pracovnik (Rodne_Cislo, Jmeno, Prijmeni, Login, Heslo, Zarazeni) VALUES('1234567890', 'Jarda', 'Jágr', 'admin', 'd033e22ae348aeb5660fc2140aec35850c4da997', 'Administrator');
+INSERT INTO akademicky_pracovnik (Rodne_Cislo, Jmeno, Prijmeni, Login, Heslo, Zarazeni) VALUES('1023456789', 'Petr', 'Bečka', 'ap2', '09a05e81438a857c8f86d6e6e5987c7d37be045a', 'Akademicky pracovnik'); 
 
 INSERT INTO ucebna (Oznaceni, Cislo_mistnosti, Budova, Kapacita) VALUES('D105', '105', 'D', '300');
 INSERT INTO ucebna (Oznaceni, Cislo_mistnosti, Budova, Kapacita) VALUES('D206', '206', 'D', '160');
