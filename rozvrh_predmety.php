@@ -1,10 +1,22 @@
 <?php
+session_save_path("tmp/");
 session_start();
 header('Content-type: text/html; charset=utf-8');
 if (!isset($_SESSION['logged']))
 {
 	$_SESSION['logged'] = 1;
 	$_SESSION['Zarazeni'] = "null";
+}
+
+if (time() - $_SESSION['cas'] > 900)
+{
+	unset($_SESSION['Jmeno'], $_SESSION['Prijmeni'], $_SESSION['Rodne_cislo'], $_SESSION['login_user']);
+	$_SESSION['Zarazeni'] = "null";
+	header('Location: prihlaseni2.php');
+}
+else
+{
+	$_SESSION['cas'] = time();
 }
 
 function getUsersOptions($tabulka, $PK, $predmet)
@@ -142,30 +154,30 @@ function getUsersOptions($tabulka, $PK, $predmet)
 		    echo " <center>
 			   		<table border =\"1\" class=\"test\">
 			   			<tr>
-			   				<td> 0:00</td>
-			   				<td> 1:00</td>
-			   				<td> 2:00</td>
-			   				<td> 3:00</td>
-			   				<td> 4:00</td>
-			   				<td> 5:00</td>
-			   				<td> 6:00</td>
-			   				<td> 7:00</td>
-			   				<td> 8:00</td>
-			   				<td> 9:00</td>
-			   				<td>10:00</td>
-			   				<td>11:00</td>
-			   				<td>12:00</td>
-			   				<td>13:00</td>
-			   				<td>14:00</td>
-			   				<td>15:00</td>
-			   				<td>16:00</td>
-			   				<td>17:00</td>
-			   				<td>18:00</td>
-			   				<td>19:00</td>
-			   				<td>20:00</td>
-			   				<td>21:00</td>
-			   				<td>22:00</td>
-			   				<td>23:00</td>
+			   				<td width=\"40\"><center>0:00</center></td>
+			   				<td width=\"40\"><center>1:00</center></td>
+			   				<td width=\"40\"><center>2:00</center></td>
+			   				<td width=\"40\"><center>3:00</center></td>
+			   				<td width=\"40\"><center>4:00</center></td>
+			   				<td width=\"40\"><center>5:00</center></td>
+			   				<td width=\"40\"><center>6:00</center></td>
+			   				<td width=\"40\"><center>7:00</center></td>
+			   				<td width=\"40\"><center>8:00</center></td>
+			   				<td width=\"40\"><center>9:00</center></td>
+			   				<td width=\"40\"><center>10:00</center></td>
+			   				<td width=\"40\"><center>11:00</center></td>
+			   				<td width=\"40\"><center>12:00</center></td>
+			   				<td width=\"40\"><center>13:00</center></td>
+			   				<td width=\"40\"><center>14:00</center></td>
+			   				<td width=\"40\"><center>15:00</center></td>
+			   				<td width=\"40\"><center>16:00</center></td>
+			   				<td width=\"40\"><center>17:00</center></td>
+			   				<td width=\"40\"><center>18:00</center></td>
+			   				<td width=\"40\"><center>19:00</center></td>
+			   				<td width=\"40\"><center>20:00</center></td>
+			   				<td width=\"40\"><center>21:00</center></td>
+			   				<td width=\"40\"><center>22:00</center></td>
+			   				<td width=\"40\"><center>23:00</center></td>
 			   			</tr>"; 
 		    while($record = MySQL_Fetch_Array($result))
 		    {

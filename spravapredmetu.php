@@ -1,4 +1,5 @@
 <?php
+session_save_path("tmp/");
 session_start();
 header('Content-type: text/html; charset=utf-8');
   include "database.php";
@@ -7,6 +8,35 @@ header('Content-type: text/html; charset=utf-8');
     echo "Nemate dostatecna opravneni.";
     exit;
   }
+
+if (time() - $_SESSION['cas'] > 900)
+{
+  unset($_SESSION['Jmeno'], $_SESSION['Prijmeni'], $_SESSION['Rodne_cislo'], $_SESSION['login_user']);
+  $_SESSION['Zarazeni'] = "null";
+  header('Location: prihlaseni2.php');
+}
+else
+{
+  $_SESSION['cas'] = time();
+}
+
+if (time() - $_SESSION['cas'] > 900)
+{
+  unset($_SESSION['Jmeno'], $_SESSION['Prijmeni'], $_SESSION['Rodne_cislo'], $_SESSION['login_user']);
+  $_SESSION['Zarazeni'] = "null";
+  header('Location: prihlaseni2.php');
+}
+else
+{
+  $_SESSION['cas'] = time();
+}
+
+    $_SESSION['zkratkaPredmet'] = "";
+    $_SESSION['nazevPredmet'] = "";
+    $_SESSION['garantPredmet'] = "";
+    $_SESSION['dotacePredmet'] = "";
+    $_SESSION['kredityPredmet'] = "";
+    $_SESSION['rocnikPredmet'] = "";
 
   if (isset($_POST['pridat_button']))
   {

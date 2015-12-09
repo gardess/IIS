@@ -1,8 +1,21 @@
 <?php
+session_save_path("tmp/");
 session_start();
 header('Content-type: text/html; charset=utf-8');
 
 	include "database.php";
+
+  if (time() - $_SESSION['cas'] > 900)
+  {
+    unset($_SESSION['Jmeno'], $_SESSION['Prijmeni'], $_SESSION['Rodne_cislo'], $_SESSION['login_user']);
+    $_SESSION['Zarazeni'] = "null";
+    header('Location: prihlaseni2.php');
+  }
+  else
+  {
+    $_SESSION['cas'] = time();
+  }
+  
 	function upravUdaje($heslo)
 	{
 		connectDB();
@@ -99,12 +112,12 @@ header('Content-type: text/html; charset=utf-8');
       echo "<form action='$script_url' method='post'>"; ?>
     <center><table border="1">
     <tr>
-    	<td>Nové heslo:</td>
+    	<td><b>Nové heslo:</b></td>
 	    <td><input type="password" name="heslo1" value=""></td>
     </tr>
 
     <tr>
-    	<td>Nové heslo znovu:</td>
+    	<td><b>Nové heslo znovu:</b></td>
 	    <td><input type="password" name="heslo2" value=""></td>
     </tr>
 

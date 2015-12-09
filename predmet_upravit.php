@@ -1,4 +1,5 @@
 <?php
+session_save_path("tmp/");
 session_start();
 header('Content-type: text/html; charset=utf-8');
 	if ($_SESSION['Zarazeni'] != "Administrator")
@@ -7,19 +8,37 @@ header('Content-type: text/html; charset=utf-8');
 		exit;
 	}
 
+if (time() - $_SESSION['cas'] > 900)
+{
+  unset($_SESSION['Jmeno'], $_SESSION['Prijmeni'], $_SESSION['Rodne_cislo'], $_SESSION['login_user']);
+  $_SESSION['Zarazeni'] = "null";
+  header('Location: prihlaseni2.php');
+}
+else
+{
+  $_SESSION['cas'] = time();
+}
+
 	include "database.php";
 	function upravRezervaci($zkratka, $nazev, $garant, $dotace, $kredity, $rocnik)
 	{
 		connectDB();
 
+    $zkratkaU = htmlspecialchars($zkratka);
+    $nazevU = htmlspecialchars($nazev);
+    $garantU = htmlspecialchars($garant);
+    $dotaceU = htmlspecialchars($dotace);
+    $kredityU = htmlspecialchars($kredity);
+    $rocnikU = htmlspecialchars($rocnik);
+
     //$request = "insert into rezervace(Datum_pridani, Cas_pridani, Oznaceni, Rodne_cislo, Zkratka, Jednorazova) values('$datum','$cas','$ozn','$RC','$zkr','$jed')";
 		$sql = "UPDATE predmet SET 
-		Zkratka='$zkratka',
-		Nazev='$nazev',
-		Garant='$garant',
-		Hodinova_dotace='$dotace',
-		Kredity='$kredity',
-    Rocnik='$rocnik'
+		Zkratka='$zkratkaU',
+		Nazev='$nazevU',
+		Garant='$garantU',
+		Hodinova_dotace='$dotaceU',
+		Kredity='$kredityU',
+    Rocnik='$rocnikU'
 		WHERE Zkratka ='".$_SESSION['value']."' ";
 		if(!mysql_query($sql))
 		{
@@ -154,29 +173,36 @@ function optionSelect($rocnik)
     <!-- Formulář pro úpravu rezervace-->
     <?php
     $uzivatel = $_SESSION['Rodne_cislo'];
-    if(isset($_POST['submit'])):
-      
+    if(isset($_POST['submit']))
+    {
+      if ((($_POST['zkratka'] == "")) || (($_POST['nazev'] == "")) || (($_POST['garant'] == "")) || (($_POST['rocnik'] == "")))
+      {
+        echo "Nezadal jsi všechna povinná pole!<br>";
+      }
+      else
+      {
         if(upravRezervaci($_POST['zkratka'], $_POST['nazev'], $_POST['garant'], $_POST['dotace'], $_POST['kredity'], $_POST['rocnik']))
           {;}//echo "Předmět přidán.<br>";
         else
           {;}//echo "Předmět se nepodařilo přidat!<br>";
-        endif;
+      }
+    }
     //$script_url = "rezervace.php";
     $script_url = $_SERVER['PHP_SELF'];   
       echo "<form action='$script_url' method='post'>"; ?>
     <center><table border="1">
     <tr>
-    	<td>Zkratka:</td>
+    	<td><b>Zkratka:</b></td>
 	    <td><input type="text" name="zkratka" size="20" value="<?php echo $DB_Zkratka; ?>"></td>
     </tr>
 
     <tr>
-    	<td>Název:</td>
+    	<td><b>Název:</b></td>
 	    <td><input type="text" name="nazev" size="20" value="<?php echo $DB_Nazev; ?>"></td>
     </tr>
 
     <tr>
-      <td>Garant:</td>
+      <td><b>Garant:</b></td>
       <td>
         <select name="garant" style="width: 173px">
           <?php 
@@ -187,14 +213,10 @@ function optionSelect($rocnik)
     </tr>
 
     <tr>
-      <td>Ročník:</td>
+      <td><b>Ročník:</b></td>
       <td>
         <select name="rocnik" style="width: 173px">
-            <option value='1BIT'>1BIT</option><br>
-            <option value='2BIT'>2BIT</option><br>
-            <option value='3BIT'>3BIT</option><br>
-            <option value='1MIT'>1MIT</option><br>
-            <option value='2MIT'>2MIT</option><br>
+            
             <?php
                 optionSelect($DB_Rocnik)
             ?>

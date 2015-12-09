@@ -1,4 +1,5 @@
 <?php
+session_save_path("tmp/");
 session_start();
 header('Content-type: text/html; charset=utf-8');
 	if ($_SESSION['Zarazeni'] != "Administrator")
@@ -7,11 +8,30 @@ header('Content-type: text/html; charset=utf-8');
 		exit;
 	}
 
+	if (time() - $_SESSION['cas'] > 900)
+	{
+		unset($_SESSION['Jmeno'], $_SESSION['Prijmeni'], $_SESSION['Rodne_cislo'], $_SESSION['login_user']);
+		$_SESSION['Zarazeni'] = "null";
+		header('Location: prihlaseni2.php');
+	}
+	else
+	{
+		$_SESSION['cas'] = time();
+	}
+
 	include "database.php";
 	function vytvorUcebnu($nazev, $urceni, $cena, $datum, $mistnost)
 	{
 		connectDB();
-		$request = "insert into prislusenstvi(Inventarni_cislo, Nazev, Urceni, Porizovaci_cena, Datum_porizeni, Mistnost) values('','$nazev','$urceni','$cena','$datum','$mistnost')";
+
+		$nazevU = htmlspecialchars($nazev);
+		$urceniU = htmlspecialchars($urceni);
+		$cenaU = htmlspecialchars($cena);
+		$datumU = htmlspecialchars($datum);
+		$mistnostU = htmlspecialchars($mistnost);
+
+
+		$request = "insert into prislusenstvi(Inventarni_cislo, Nazev, Urceni, Porizovaci_cena, Datum_porizeni, Mistnost) values('','$nazevU','$urceniU','$cenaU','$datumU','$mistnostU')";
 
 		if(!mysql_query($request))
 		{
@@ -85,19 +105,36 @@ header('Content-type: text/html; charset=utf-8');
     <!-- Formulář pro vytvoření nového uživatele -->
     <?php
     $uzivatel = $_SESSION['Rodne_cislo'];
-    if(isset($_POST['submit'])):
-      //echo "ucebna: " . $_POST['ucebna'] . "rodne cislo: " . $_POST['RC'] . "predmet: " . $_POST['zkratka'] . "jednorazova: " . $_POST['jed']. "datum: " . $_POST['datum']. "cas: " . $_POST['cas'] . "</br>";
-    	
-        if(vytvorUcebnu($_POST['nazev'], $_POST['urceni'], $_POST['cena'], $_POST['datum'], $_POST['mistnost']))
-          echo "Příslušenství vytvořeno.<br>";
-        else
-          echo "Příslušenství se nepodařilo vytvořit!<br>";
-        endif;
+    if(isset($_POST['submit']))
+    {
+		$_SESSION['nazevPrislusentvi'] = $_POST['nazev'];
+		$_SESSION['urceniPrislusentvi'] = $_POST['urceni'];
+		$_SESSION['cenaPrislusentvi'] = $_POST['cena'];
+		$_SESSION['datumPrislusentvi'] = $_POST['datum'];
+		$_SESSION['mistnostPrislusentvi'] = $_POST['mistnost'];
+
+    	if ((($_POST['nazev'] == "")) || (($_POST['cena'] == "")) || (($_POST['datum'] == "")) || (($_POST['mistnost'] == "")))
+    	{
+    		echo "Nezadal jsi všechna povinná pole!<br>";
+    	}
+    	else
+    	{
+	        if(vytvorUcebnu($_POST['nazev'], $_POST['urceni'], $_POST['cena'], $_POST['datum'], $_POST['mistnost']))
+	        {
+	          echo "Příslušenství vytvořeno.<br>";
+	        }
+	        else
+	        {
+	          echo "Příslušenství se nepodařilo vytvořit!<br>";
+	        }
+	    }
+    
+    }
     $script_url = $_SERVER['PHP_SELF'];   
       echo "<form action='$script_url' method='post'>"; ?>
     <center><table border="1">
     <tr>
-    	<td>Název:</td>
+    	<td><b>Název:</b></td>
 	    <td>
 	    	<select name="nazev" style="width: 173px">
 			    	<option value='Projektor'>Projektor</option><br>
@@ -110,7 +147,7 @@ header('Content-type: text/html; charset=utf-8');
     </tr>
 
     <tr>
-    	<td>Místnost:</td>
+    	<td><b>Místnost:</b></td>
 	    <td>
 		    <select name="mistnost" style="width: 173px">
 		    <?php 
@@ -121,13 +158,13 @@ header('Content-type: text/html; charset=utf-8');
     </tr>
 
 	<tr>
-    	<td>Pořizovací cena:</td>
-	    <td><input type="text" name="cena" size="20"></td>
+    	<td><b>Pořizovací cena:</b></td>
+	    <td><input type="text" name="cena" size="20" value="<?php if ((isset($_SESSION['cenaPrislusentvi'])) && ($_SESSION['cenaPrislusentvi'] != "")) {echo $_SESSION['cenaPrislusentvi'];} ?>"></td>
     </tr>
 
     <tr>
-    	<td>Datum pořízení:</td>
-	    <td><input type="text" name="datum" id="inputField" size="20"></td>
+    	<td><b>Datum pořízení:</b></td>
+	    <td><input type="text" name="datum" id="inputField" size="20" value="<?php if ((isset($_SESSION['datumPrislusentvi'])) && ($_SESSION['datumPrislusentvi'] != "")) {echo $_SESSION['datumPrislusentvi'];} ?>"></td>
     </tr>
 
     <tr>

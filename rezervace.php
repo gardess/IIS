@@ -1,7 +1,26 @@
 <?php
+session_save_path("tmp/");
 session_start();
 header('Content-type: text/html; charset=utf-8');
 include "database.php";
+
+	$_SESSION['zkratkaRezervace'] = "";
+    $_SESSION['datumRRezervace'] = "";
+    $_SESSION['casRRezervace'] = "";
+    $_SESSION['delkaRRezervace'] = "";
+    $_SESSION['typRezervace'] = "";
+
+if (time() - $_SESSION['cas'] > 900)
+{
+	unset($_SESSION['Jmeno'], $_SESSION['Prijmeni'], $_SESSION['Rodne_cislo'], $_SESSION['login_user']);
+	$_SESSION['Zarazeni'] = "null";
+	header('Location: prihlaseni2.php');
+}
+else
+{
+	$_SESSION['cas'] = time();
+}
+
 if (isset($_POST['pridat_button']))
 {
 	header('Location: rezervace_pridat.php');

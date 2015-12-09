@@ -1,4 +1,5 @@
 <?php
+session_save_path("tmp/");
 session_start();
 header('Content-type: text/html; charset=utf-8');
 	if ($_SESSION['Zarazeni'] != "Administrator")
@@ -7,18 +8,33 @@ header('Content-type: text/html; charset=utf-8');
 		exit;
 	}
 
+if (time() - $_SESSION['cas'] > 900)
+{
+  unset($_SESSION['Jmeno'], $_SESSION['Prijmeni'], $_SESSION['Rodne_cislo'], $_SESSION['login_user']);
+  $_SESSION['Zarazeni'] = "null";
+  header('Location: prihlaseni2.php');
+}
+else
+{
+  $_SESSION['cas'] = time();
+}
+
 	include "database.php";
 	function upravUcebnu($oznaceni, $cislo, $budova, $kapacita)
 	{
 		connectDB();
 
+    $oznaceniU = htmlspecialchars($oznaceni);
+    $cisloU = htmlspecialchars($cislo);
+    $budovaU = htmlspecialchars($budova);
+    $kapacitaU = htmlspecialchars($kapacita);
 
     //$request = "insert into rezervace(Datum_pridani, Cas_pridani, Oznaceni, Rodne_cislo, Zkratka, Jednorazova) values('$datum','$cas','$ozn','$RC','$zkr','$jed')";
 		$sql = "UPDATE ucebna SET 
-		Oznaceni='$oznaceni',
-		Cislo_mistnosti='$cislo',
-		Budova='$budova',
-		Kapacita='$kapacita'
+		Oznaceni='$oznaceniU',
+		Cislo_mistnosti='$cisloU',
+		Budova='$budovaU',
+		Kapacita='$kapacitaU'
 		WHERE Oznaceni ='".$_SESSION['value']."' ";
 		if(!mysql_query($sql))
 		{
@@ -91,34 +107,41 @@ header('Content-type: text/html; charset=utf-8');
     <!-- Formulář pro úpravu rezervace-->
     <?php
     $uzivatel = $_SESSION['Rodne_cislo'];
-    if(isset($_POST['submit'])):
-      
-        if(upravUcebnu($_POST['oznaceni'], $_POST['cislo'], $_POST['budova'], $_POST['kapacita']))
-          {;}//echo "Předmět přidán.<br>";
-        else
-          {;}//echo "Předmět se nepodařilo přidat!<br>";
-        endif;
+    if(isset($_POST['submit']))
+    {
+    	if ((($_POST['oznaceni'] == "")) || (($_POST['cislo'] == "")) || (($_POST['budova'] == "")) || (($_POST['kapacita'] == "")))
+    	{
+    		echo "Nezadal jsi všechna povinná pole!<br>";
+    	}
+    	else
+    	{
+	        if(upravUcebnu($_POST['oznaceni'], $_POST['cislo'], $_POST['budova'], $_POST['kapacita']))
+	        {;}//echo "Předmět přidán.<br>";
+	        else
+	        {;}//echo "Předmět se nepodařilo přidat!<br>";
+	    }
+    }
     //$script_url = "rezervace.php";
     $script_url = $_SERVER['PHP_SELF'];   
       echo "<form action='$script_url' method='post'>"; ?>
     <center><table border="1">
     <tr>
-    	<td>Označení:</td>
+    	<td><b>Označení:</b></td>
 	    <td><input type="text" name="oznaceni" size="20" value="<?php echo $DB_Oznaceni; ?>"></td>
     </tr>
 
     <tr>
-    	<td>Číslo místnosti:</td>
+    	<td><b>Číslo místnosti:</b></td>
 	    <td><input type="text" name="cislo" size="20" value="<?php echo $DB_Cislo_Mistnosti; ?>"></td>
     </tr>
 
     <tr>
-    	<td>Budova:</td>
+    	<td><b>Budova:</b></td>
 	    <td><input type="text" name="budova" size="20" value="<?php echo $DB_Budova; ?>"></td>
     </tr>
 
     <tr>
-    	<td>Kapacita:</td>
+    	<td><b>Kapacita:</b></td>
 	    <td><input type="text" name="kapacita" size="20" value="<?php echo $DB_Kapacita; ?>"></td>
     </tr>
 

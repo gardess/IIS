@@ -45,7 +45,8 @@ header('Content-type: text/html; charset=utf-8');
     echo '<div id="menuRezervace">
       <a href="index.php">Rozvrh učeben</a>&nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="rozvrh_predmety.php">Rozvrh předmětů</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="rozvrh_rocniky.php">Rozvrh ročníků</a>
+      <a href="rozvrh_rocniky.php">Rozvrh ročníků</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="rozvrh_obory.php">Rozvrh oborů</a>
       </div>';
   }
 

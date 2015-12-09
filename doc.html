@@ -1,0 +1,120 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>Projekt IIS</title>
+    <style type="text/css">
+    	table { border-collapse: collapse; }
+    	td, th { border: 1px solid black; padding: 0.3em 0.5em; text-align: left; }
+    	dt { font-weight: bold; margin-top: 0.5em; }
+    </style>
+</head>
+<body>
+
+<!-- Zkontrolujte prosím nastavení kódování v hlavičce dokumentu 
+     podle použitého editoru -->
+
+<h1>Název zadání</h1> <!-- Nahradte názvem svého zadání -->
+
+<dl>
+	<dt>Autoři</dt>
+	<dd>Milan Gardáš <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
+	    <a href="mailto:xgarda04@stud.fit.vutbr.cz">xgarda04@stud.fit.vutbr.cz</a> -
+		Programování funkcionality informačního systému, design, databázový systém.
+	</dd>
+	<dd>Filip Pobořil <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
+	    <a href="mailto:xpobor02@stud.fit.vutbr.cz">xpobor02@stud.fit.vutbr.cz</a> - 
+		Databázový systém a připojení, programování funkcionality informačního systému, dokumentace.
+	</dd>
+	<dt>URL aplikace</dt>
+	<dd><a href="http://www.stud.fit.vutbr.cz/~xgarda04/IIS">http://www.stud.fit.vutbr.cz/~xgarda04/IIS</a></dd>
+</dl>
+
+<h2>Uživatelé systému pro testování</h2>
+<p>Uveďte prosím existující zástupce <strong>všech rolí uživatelů</strong>.</p>
+<table>
+<tr><th>Login</th><th>Heslo</th><th>Role</th></tr>
+<tr><td>admin</td><td>admin</td><td>Administrátor</td></tr>
+<tr><td>ap1</td><td>ap1</td><td>Akademický pracovník</td></tr>
+</table>
+
+<h2>Implementace</h2>
+<table>
+  <tbody>
+  <tr>
+  	<td><b>Soubor(y)</b></td>
+  	<td><b>Popis</b></td>
+  </tr>
+  <tr>
+    <td>index.php<br>rozvrh_predmety.php<br>rozvrh_rocniky.php<br>rozvrh_obory.php</td>
+    <td>Zobrazení rozvrhu - učebny, předměty, ročníky a obory.<br></td>
+  </tr>
+  <tr>
+    <td>rezervace.php</td>
+    <td>Zobrazení rezervací.<br></td>
+  </tr>
+  <tr>
+    <td>rezervace_pridat.php<br>rezervace_upravit.php<br>rezervace_odebrat.php</td>
+    <td>Přidání, upravení a odebrání rezervace.<br></td>
+  </tr>
+  <tr>
+    <td>nastaveni.php</td>
+    <td>Zobrazení informací o aktuálně přihlášeném uživateli.<br></td>
+  </tr>
+  <tr>
+    <td>nastaveni_udaje.php</td>
+    <td>Změna osobních údajů přihlášeného uživatele.<br></td>
+  </tr>
+  <tr>
+    <td>nastaveni_heslo.php</td>
+    <td>Změna hesla přihlášeného uživatele.<br></td>
+  </tr>
+  <tr>
+    <td>spravauzivatelu.php<br>spravapredmetu.php<br>spravauceben.php<br>spravaprislusentvi.php</td>
+    <td>Zobrazení uživatelů / předmětů / učeben / příslušenství.<br></td>
+  </tr>
+  <tr>
+    <td>uzivatel_pridat.php<br>uzivatel_upravit.php<br>uzivatel_odebrat.php</td>
+    <td>Přidání, upravení a odebrání uživatele.<br></td>
+  </tr>
+  <tr>
+    <td>predmet_pridat.php<br>predmet_upravit.php<br>predmet_odebrat.php</td>
+    <td>Přidání, upravení a odebrání předmětu.<br></td>
+  </tr>
+  <tr>
+    <td>ucebna_pridat.php<br>ucebna_upravit.php<br>ucebna_odebrat.php</td>
+    <td>Přidání, upravení a odebrání učebny.<br></td>
+  </tr>
+  <tr>
+    <td>prislusenstvi_pridat.php<br>prislusenstvi_upravit.php<br>prislusenstvi_odebrat.php</td>
+    <td>Přidání, upravení a odebrání příslušenství.<br></td>
+  </tr>
+  <tr>
+    <td>database.php</td>
+    <td>Skript pro vytvoření spojení s databází.<br></td>
+  </tr>
+  <tr>
+    <td>prihlaseni.php<br>prihlaseni2.php<br>logout.php<br></td>
+    <td>Skripty pro přihlášení a odhlášení ze systému.<br></td>
+  </tr>
+  <tr>
+    <td>menu.php</td>
+    <td>Menu měnící položky dle typu uživatele.</td>
+  </tr>
+</tbody></table>
+
+<h2>Instalace</h2>
+<ul>
+<li>Instalace probíha překopírovaním souborů na server do cílové složky, vytvořením složky <em>tmp</em> se zápisovými právy pro sezení a změnou souboru <em>database.php</em> na správne hodnoty pro připojení k databázi.</li>
+<li>Stránky nevyžadují speciální software a konfigurace na serveru EVA je postačující - PHP 5.3 a MySQL 5.5.</li>
+<li>Databáze se inicializuje skriptem <em>dbinit.sql</em>.</li>
+</ul>
+
+<h2>Známé problémy</h2>
+<p>Byl vypuštěn aktor čas, protože jsme se rozhodli, že bude lepší když půjde zjistit historie rezervací, a aktor student, protože jediná věc, kterou by mohl dělat by bylo zobrazení rozvrhu na což má, ale dle našeho názoru právo každý návštěvník našeho IS.</p>
+<p>Není možné vytvářet nové ročníky a obory, ale je nutné každému předmětu přiřadit ročník, ve kterém je vyučován (obor se přiřadí sám).</p>
+<p>Systém neumožňuje vyhledání volné učebny v požadovaném čase (je nutné si volnost učebny ověřit sám přes rozvrh učebny).</p>
+</body>
+</html>

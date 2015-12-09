@@ -1,6 +1,19 @@
 <?php
+session_save_path("tmp/");
 session_start();
 header('Content-type: text/html; charset=utf-8');
+
+if (time() - $_SESSION['cas'] > 900)
+{
+	unset($_SESSION['Jmeno'], $_SESSION['Prijmeni'], $_SESSION['Rodne_cislo'], $_SESSION['login_user']);
+	$_SESSION['Zarazeni'] = "null";
+	header('Location: prihlaseni2.php');
+}
+else
+{
+	$_SESSION['cas'] = time();
+}
+
 	include "database.php";
 	function upravRezervaci($ozn, $RC, $zkr, $datum, $cas, $DB_RC, $datumR, $casR, $delkaR, $typ)
 	{
@@ -11,16 +24,25 @@ header('Content-type: text/html; charset=utf-8');
 			return false;
 		}
 
-    //$request = "insert into rezervace(Datum_pridani, Cas_pridani, Oznaceni, Rodne_cislo, Zkratka, Jednorazova) values('$datum','$cas','$ozn','$RC','$zkr','$jed')";
+    	$oznU = htmlspecialchars($ozn);
+	    $RCU = htmlspecialchars($RC);
+	    $zkrU = htmlspecialchars($zkr);
+	    $datumU = htmlspecialchars($datum);
+	    $casU = htmlspecialchars($cas);
+	    $datumRU = htmlspecialchars($datumR);
+	    $casRU = htmlspecialchars($casR);
+	    $delkaRU = htmlspecialchars($delkaR);
+	    $typU = htmlspecialchars($typ);
+
 		$sql = "UPDATE rezervace SET 
-		Datum_pridani='$datum',
-		Cas_pridani='$cas',
-		Oznaceni='$ozn',
-		Zkratka='$zkr',
-		Datum='$datumR',
-		Cas='$casR',
-		Delka='$delkaR',
-		Typ='$typ'
+		Datum_pridani='$datumU',
+		Cas_pridani='$casU',
+		Oznaceni='$oznU',
+		Zkratka='$zkrU',
+		Datum='$datumRU',
+		Cas='$casRU',
+		Delka='$delkaRU',
+		Typ='$typU'
 		WHERE ID ='".$_SESSION['value']."' ";
 		if(!mysql_query($sql))
 		{
@@ -94,13 +116,6 @@ function optionSelect($typ)
 	}
 }
 
-
-
-		
-
-
-
-
 ?>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
@@ -161,19 +176,26 @@ function optionSelect($typ)
     <!-- Formulář pro úpravu rezervace-->
     <?php
     $uzivatel = $_SESSION['Rodne_cislo'];
-    if(isset($_POST['submit'])):
-      
-        if(upravRezervaci($_POST['ucebna'], $_POST['RC'], $_POST['zkratka'], $_POST['datum'], $_POST['cas'], $DB_RC, $_POST['datumR'], $_POST['casR'], $_POST['delkaR'], $_POST['typ']))
-          {;}//echo "Předmět přidán.<br>";
-        else
-          {;}//echo "Předmět se nepodařilo přidat!<br>";
-        endif;
+    if(isset($_POST['submit']))
+    {  
+    	if ((($_POST['ucebna'] == "")) || (($_POST['zkratka'] == "")) || (($_POST['datumR'] == "")) || (($_POST['casR'] == "")) || (($_POST['delkaR'] == "")) || (($_POST['typ'] == "")))
+	    {
+	      echo "Nezadal jsi všechna povinná pole!<br>";
+	    }
+	    else
+	    {
+	      if(upravRezervaci($_POST['ucebna'], $_POST['RC'], $_POST['zkratka'], $_POST['datum'], $_POST['cas'], $DB_RC, $_POST['datumR'], $_POST['casR'], $_POST['delkaR'], $_POST['typ']))
+	      {;}//echo "Předmět přidán.<br>";
+	      else
+	      {;}//echo "Předmět se nepodařilo přidat!<br>";
+		}
+  	}
     //$script_url = "rezervace.php";
     $script_url = $_SERVER['PHP_SELF'];   
       echo "<form action='$script_url' method='post'>"; ?>
     <center><table border="1">
     <tr>
-    	<td>Ucebna:</td>
+    	<td><b>Učebna:</b></td>
 	    <td>
 		    <select name="ucebna" style="width: 173px">
 		    <?php 
@@ -186,7 +208,7 @@ function optionSelect($typ)
 
     <input type="hidden" name="RC" / value="<?php echo $uzivatel; ?>">
     <tr>
-	    <td>Zkratka predmetu:</td>
+	    <td><b>Zkratka předmětu:</b></td>
 	    <td>
 		    <select name="zkratka" style="width: 173px">
 		    <?php 
@@ -196,20 +218,20 @@ function optionSelect($typ)
 	    </td>
 	</tr>
 	<tr>
-		<td>Datum:</td>
+		<td><b>Datum:</b></td>
 		<td><input type="text" name="datumR" size="20" id="inputField" value="<?php echo $DB_DatumR; ?>"></td>
 	</tr>
 	<tr>
-		<td>Cas:</td>
+		<td><b>Čas:</b></td>
 		<td><input type="text" name="casR" size="17" value="<?php echo $DB_CasR; ?>">:00</td>
 	</tr>
 	<tr>
-		<td>Delka:</td>
+		<td><b>Délka:</b></td>
 		<td><input type="text" name="delkaR" size="16" value="<?php echo $DB_DelkaR; ?>">hod</td>
 	</tr>
 
 	<tr>
-      <td>Typ výuky:<td>
+      <td><b>Typ výuky:</b><td>
       	<select name="typ" style="width: 173px">
       	<?php
         	optionSelect($DB_Typ);

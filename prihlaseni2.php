@@ -59,6 +59,7 @@ header('Content-type: text/html; charset=utf-8');
       <div id="telo">   
       <h2 class="nadpis">Přihlášení</h2>
       <center>
+      <h3>Byl jsi automaticky odhlášen</h3>
          <form action="" method="post">
             <table>
                <tr>

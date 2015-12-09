@@ -1,4 +1,5 @@
 <?php
+session_save_path("tmp/");
 session_start();
 header('Content-type: text/html; charset=utf-8');
 	if ($_SESSION['Zarazeni'] != "Administrator")
@@ -7,8 +8,19 @@ header('Content-type: text/html; charset=utf-8');
 		exit;
 	}
 
+if (time() - $_SESSION['cas'] > 900)
+{
+	unset($_SESSION['Jmeno'], $_SESSION['Prijmeni'], $_SESSION['Rodne_cislo'], $_SESSION['login_user']);
+	$_SESSION['Zarazeni'] = "null";
+	header('Location: prihlaseni2.php');
+}
+else
+{
+	$_SESSION['cas'] = time();
+}
+
 	include "database.php";
-	function upravRezervaci($jmeno, $prijmeni, $RC, $login, $heslo, $zarazeni, $DB_Zarazeni)
+	function upravRezervaci($jmeno, $prijmeni, $login, $zarazeni, $DB_Zarazeni)
 	{
 		connectDB();
 		if (($DB_RC != $RC) && ($_SESSION['Zarazeni'] != "Administrator"))
@@ -17,14 +29,16 @@ header('Content-type: text/html; charset=utf-8');
 			return false;
 		}
 
-    //$request = "insert into rezervace(Datum_pridani, Cas_pridani, Oznaceni, Rodne_cislo, Zkratka, Jednorazova) values('$datum','$cas','$ozn','$RC','$zkr','$jed')";
+		$jmenoU = htmlspecialchars($jmeno);
+		$prijmeniU = htmlspecialchars($prijmeni);
+		$loginU = htmlspecialchars($login);
+		$zarazeniU = htmlspecialchars($zarazeni);
+
 		$sql = "UPDATE akademicky_pracovnik SET 
-		Jmeno='$jmeno',
-		Prijmeni='$prijmeni',
-		Rodne_cislo='$RC',
-		Login='$login',
-		Heslo='$heslo',
-		Zarazeni='$zarazeni'
+		Jmeno='$jmenoU',
+		Prijmeni='$prijmeniU',
+		Login='$loginU',
+		Zarazeni='$zarazeniU'
 		WHERE ID ='".$_SESSION['value']."' ";
 		if(!mysql_query($sql))
 		{
@@ -122,39 +136,41 @@ function optionSelect($typ)
     <!-- Formulář pro úpravu rezervace-->
     <?php
     $uzivatel = $_SESSION['Rodne_cislo'];
-    if(isset($_POST['submit'])):
-      
-        if(upravRezervaci($_POST['jmeno'], $_POST['prijmeni'], $_POST['RC'], $_POST['login'], $_POST['heslo'], $_POST['zarazeni'], $DB_Zarazeni))
-          {;}//echo "Předmět přidán.<br>";
-        else
-          {;}//echo "Předmět se nepodařilo přidat!<br>";
-        endif;
+    if(isset($_POST['submit']))
+    {
+        if ((($_POST['jmeno'] == "")) || (($_POST['prijmeni'] == "")) || (($_POST['login'] == ""))|| (($_POST['zarazeni'] == "")))
+    	{
+    		echo "Nezadal jsi všechna povinná pole!<br>";
+    	}
+    	else
+    	{
+	        if(upravRezervaci($_POST['jmeno'], $_POST['prijmeni'], $_POST['login'], $_POST['zarazeni'], $DB_Zarazeni))
+	          {;}//echo "Předmět přidán.<br>";
+	        else
+	          {;}//echo "Předmět se nepodařilo přidat!<br>";
+      	}
+    }
     //$script_url = "rezervace.php";
     $script_url = $_SERVER['PHP_SELF'];   
       echo "<form action='$script_url' method='post'>"; ?>
     <center><table border="1">
     <tr>
-    	<td>Jméno:</td>
+    	<td><b>Jméno:</b></td>
 	    <td><input type="text" name="jmeno" size="20" value="<?php echo $DB_Jmeno; ?>"></td>
     </tr>
 
     <tr>
-    	<td>Příjmení:</td>
+    	<td><b>Příjmení:</b></td>
 	    <td><input type="text" name="prijmeni" size="20" value="<?php echo $DB_Prijmeni; ?>"></td>
     </tr>
 
     <tr>
-    	<td>Rodné číslo:</td>
-	    <td><input type="text" name="RC" size="20" value="<?php echo $DB_RC; ?>"></td>
-    </tr>
-
-    <tr>
-    	<td>Login:</td>
+    	<td><b>Login:</b></td>
 	    <td><input type="text" name="login" size="20" value="<?php echo $DB_Login; ?>"></td>
     </tr>
     
     <tr>
-	    <td>Zařazení:</td>
+	    <td><b>Zařazení:</b></td>
 	    <td>
 		    <select name="zarazeni" style="width: 173px">
 		    <?php

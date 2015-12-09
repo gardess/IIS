@@ -1,4 +1,5 @@
 <?php
+session_save_path("tmp/");
 session_start();
 header('Content-type: text/html; charset=utf-8');
 	include "database.php";
@@ -7,6 +8,24 @@ header('Content-type: text/html; charset=utf-8');
 		echo "Nemate dostatecna opravneni.";
 		exit;
 	}
+
+if (time() - $_SESSION['cas'] > 900)
+{
+	unset($_SESSION['Jmeno'], $_SESSION['Prijmeni'], $_SESSION['Rodne_cislo'], $_SESSION['login_user']);
+	$_SESSION['Zarazeni'] = "null";
+	header('Location: prihlaseni2.php');
+}
+else
+{
+	$_SESSION['cas'] = time();
+}
+
+		$_SESSION['jmenoUzivatel'] = "";
+		$_SESSION['prijmeniUzivatel'] = "";
+		$_SESSION['rodne_cisloUzivatel'] = "";
+		$_SESSION['loginUzivatel'] = "";
+		$_SESSION['hesloUzivatel'] = "";
+		$_SESSION['funkceUzivatel'] = "";
 
 	if (isset($_POST['pridat_button']))
 	{

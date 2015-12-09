@@ -2,12 +2,11 @@ USE xgarda04;
 SET NAMES 'utf8';
 SET COLLATION_CONNECTION='latin2_czech_cs';
 
-drop table if exists ap_predmet;
 drop table if exists rezervace;
-drop table if exists akademicky_pracovnik;
 drop table if exists predmet;
+drop table if exists akademicky_pracovnik;
+drop table if exists prislusentvi;
 drop table if exists ucebna;
-drop table if exists vybaveni_ucebny;
 
 CREATE TABLE ucebna (
     Oznaceni VARCHAR(4) NOT NULL,
@@ -70,9 +69,9 @@ CREATE TABLE rezervace (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci;  
 
 
-INSERT INTO akademicky_pracovnik (Rodne_Cislo, Jmeno, Prijmeni, Login, Heslo, Zarazeni) VALUES('9009213939', 'Al', 'Koholik', 'ap1', '6748fc724dd9947b41ba99bd1a9ed2d17f17422a', 'Akademicky pracovnik');
-INSERT INTO akademicky_pracovnik (Rodne_Cislo, Jmeno, Prijmeni, Login, Heslo, Zarazeni) VALUES('1234567890', 'Jarda', 'Jágr', 'admin', 'd033e22ae348aeb5660fc2140aec35850c4da997', 'Administrator');
-INSERT INTO akademicky_pracovnik (Rodne_Cislo, Jmeno, Prijmeni, Login, Heslo, Zarazeni) VALUES('1023456789', 'Petr', 'Bečka', 'ap2', '09a05e81438a857c8f86d6e6e5987c7d37be045a', 'Akademicky pracovnik'); 
+INSERT INTO akademicky_pracovnik (Rodne_Cislo, Jmeno, Prijmeni, Login, Heslo, Zarazeni) VALUES('8705183960', 'Al', 'Koholik', 'ap1', '6748fc724dd9947b41ba99bd1a9ed2d17f17422a', 'Akademicky pracovnik');
+INSERT INTO akademicky_pracovnik (Rodne_Cislo, Jmeno, Prijmeni, Login, Heslo, Zarazeni) VALUES('8953275331', 'Jan', 'Novák', 'admin', 'd033e22ae348aeb5660fc2140aec35850c4da997', 'Administrator');
+INSERT INTO akademicky_pracovnik (Rodne_Cislo, Jmeno, Prijmeni, Login, Heslo, Zarazeni) VALUES('5808169499', 'Petr', 'Straka', 'ap2', '09a05e81438a857c8f86d6e6e5987c7d37be045a', 'Akademicky pracovnik'); 
 
 INSERT INTO ucebna (Oznaceni, Cislo_mistnosti, Budova, Kapacita) VALUES('D105', '105', 'D', '300');
 INSERT INTO ucebna (Oznaceni, Cislo_mistnosti, Budova, Kapacita) VALUES('D206', '206', 'D', '160');
@@ -82,7 +81,11 @@ INSERT INTO prislusenstvi (Nazev, Urceni, Porizovaci_cena, Datum_porizeni, Mistn
 INSERT INTO prislusenstvi (Nazev, Urceni, Porizovaci_cena, Datum_porizeni, Mistnost) VALUES('Projektor', 'k promitani', '100000', STR_TO_DATE('12,11,2015', '%d,%m,%Y'), 'D207');
 INSERT INTO prislusenstvi (Nazev, Urceni, Porizovaci_cena, Datum_porizeni, Mistnost) VALUES('Projektor', 'k promitani', '100000', STR_TO_DATE('03,11,2015', '%d,%m,%Y'), 'D206');
 
-INSERT INTO predmet (Zkratka, Nazev, Garant, Hodinova_dotace, Kredity, Rocnik) VALUES('IPZ', 'Periferní zařízení', '9009213939', '3', '4', '3BIT');
-INSERT INTO predmet (Zkratka, Nazev, Garant, Hodinova_dotace, Kredity, Rocnik) VALUES('IMS', 'Modelování a simulace', '9009213939', '3', '5', '3BIT');
-INSERT INTO predmet (Zkratka, Nazev, Garant, Hodinova_dotace, Kredity, Rocnik) VALUES('TIN', 'Teoretická informatika', '1234567890', '3', '5', '1MIT');
-INSERT INTO predmet (Zkratka, Nazev, Garant, Hodinova_dotace, Kredity, Rocnik) VALUES('ISA', 'Síťové aplikace a správa sítí', '1234567890', '3', '5', '3BIT');
+INSERT INTO predmet (Zkratka, Nazev, Garant, Hodinova_dotace, Kredity, Rocnik) VALUES('IPZ', 'Periferní zařízení', '8705183960', '3', '4', '3BIT');
+INSERT INTO predmet (Zkratka, Nazev, Garant, Hodinova_dotace, Kredity, Rocnik) VALUES('IMS', 'Modelování a simulace', '8705183960', '3', '5', '3BIT');
+INSERT INTO predmet (Zkratka, Nazev, Garant, Hodinova_dotace, Kredity, Rocnik) VALUES('TIN', 'Teoretická informatika', '8953275331', '3', '5', '1MIT');
+INSERT INTO predmet (Zkratka, Nazev, Garant, Hodinova_dotace, Kredity, Rocnik) VALUES('ISA', 'Síťové aplikace a správa sítí', '8953275331', '3', '5', '3BIT');
+
+INSERT INTO rezervace (Datum_pridani, Cas_pridani, Oznaceni, Rodne_cislo, Zkratka, Datum, Cas, Delka, Typ) VALUES ('2015-12-06', '12:00:00', 'D105', '8953275331', 'IMS', '2015-12-06', '12:00', '3', 'Přednáška');
+INSERT INTO rezervace (Datum_pridani, Cas_pridani, Oznaceni, Rodne_cislo, Zkratka, Datum, Cas, Delka, Typ) VALUES ('2015-12-06', '12:00:00', 'D105', '8705183960', 'TIN', '2015-12-06', '15:00', '2', 'Demonstrační cvičení');
+INSERT INTO rezervace (Datum_pridani, Cas_pridani, Oznaceni, Rodne_cislo, Zkratka, Datum, Cas, Delka, Typ) VALUES ('2015-12-06', '12:00:00', 'D206', '8953275331', 'ISA', '2015-12-06', '12:00', '5', 'Zkouška');

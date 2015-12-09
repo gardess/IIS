@@ -1,4 +1,5 @@
 <?php
+session_save_path("tmp/");
 session_start();
 header('Content-type: text/html; charset=utf-8');
 	if ($_SESSION['Zarazeni'] != "Administrator")
@@ -7,11 +8,28 @@ header('Content-type: text/html; charset=utf-8');
 		exit;
 	}
 
+if (time() - $_SESSION['cas'] > 900)
+{
+	unset($_SESSION['Jmeno'], $_SESSION['Prijmeni'], $_SESSION['Rodne_cislo'], $_SESSION['login_user']);
+	$_SESSION['Zarazeni'] = "null";
+	header('Location: prihlaseni2.php');
+}
+else
+{
+	$_SESSION['cas'] = time();
+}
+
 	include "database.php";
 	function vytvorUcebnu($oznaceni, $cislo, $budova, $kapacita)
 	{
 		connectDB();
-		$request = "insert into ucebna(Oznaceni, Cislo_mistnosti, Budova, Kapacita) values('$oznaceni','$cislo','$budova','$kapacita')";
+
+		$oznaceniU = htmlspecialchars($oznaceni);
+		$cisloU = htmlspecialchars($cislo);
+		$budovaU = htmlspecialchars($budova);
+		$kapacitaU = htmlspecialchars($kapacita);
+
+		$request = "insert into ucebna(Oznaceni, Cislo_mistnosti, Budova, Kapacita) values('$oznaceniu','$cisloU','$budovau','$kapacitau')";
 
 		if(!mysql_query($request))
 		{
@@ -24,22 +42,6 @@ header('Content-type: text/html; charset=utf-8');
 			header('Location: spravauceben.php');
 			return true;
 		}                
-	}
-
-	function getUsersOptions($tabulka, $PK)
-	{
-		connectDB();
-	    
-		$result = mysql_query("select * from $tabulka");
-		$i = 0;
-		while($record = MySQL_Fetch_Array($result))
-		{
-			$zkratka = $record[$PK];
-			echo "<option value='$zkratka'>";
-			echo "$zkratka";
-			echo "</option><br>";
-			$i++;
-		}
 	}
 ?>
 
@@ -71,34 +73,50 @@ header('Content-type: text/html; charset=utf-8');
     <!-- Formulář pro vytvoření nového uživatele -->
     <?php
     $uzivatel = $_SESSION['Rodne_cislo'];
-    if(isset($_POST['submit'])):
-      //echo "ucebna: " . $_POST['ucebna'] . "rodne cislo: " . $_POST['RC'] . "predmet: " . $_POST['zkratka'] . "jednorazova: " . $_POST['jed']. "datum: " . $_POST['datum']. "cas: " . $_POST['cas'] . "</br>";
-        if(vytvorUcebnu($_POST['oznaceni'], $_POST['cislo'], $_POST['budova'], $_POST['kapacita']))
-          echo "Učebna vytvořena.<br>";
-        else
-          echo "Učebnu se nepodařilo vytvořit!<br>";
-        endif;
+    if(isset($_POST['submit']))
+    {
+    	$_SESSION['oznaceniUcebna'] = $_POST['oznaceni'];
+		$_SESSION['cisloUcebna'] = $_POST['cislo'];
+		$_SESSION['budovaUcebna'] = $_POST['budova'];
+		$_SESSION['kapacitaUcebna'] = $_POST['kapacita'];
+
+    	if ((($_POST['oznaceni'] == "")) || (($_POST['cislo'] == "")) || (($_POST['budova'] == "")) || (($_POST['kapacita'] == "")))
+    	{
+    		echo "Nezadal jsi všechna povinná pole!<br>";
+    	}
+    	else
+    	{
+	        if(vytvorUcebnu($_POST['oznaceni'], $_POST['cislo'], $_POST['budova'], $_POST['kapacita']))
+	        {
+	          echo "Učebna vytvořena.<br>";
+	        }
+	        else
+	        {
+	          echo "Učebnu se nepodařilo vytvořit!<br>";
+	        }
+	    }
+    }
     $script_url = $_SERVER['PHP_SELF'];   
       echo "<form action='$script_url' method='post'>"; ?>
     <center><table border="1">
     <tr>
-    	<td>Označení:</td>
-	    <td><input type="text" size="20" name="oznaceni"></td>
+    	<td><b>Označení:</b></td>
+	    <td><input type="text" size="20" name="oznaceni" value="<?php if ($_SESSION['oznaceniUcebna'] != "") {echo $_SESSION['oznaceniUcebna'];} ?>"></td>
     </tr>
 
     <tr>
-    	<td>Číslo místnosti:</td>
-	    <td><input type="text" size="20" name="cislo"></td>
+    	<td><b>Číslo místnosti:</b></td>
+	    <td><input type="text" size="20" name="cislo" value="<?php if ($_SESSION['cisloUcebna'] != "") {echo $_SESSION['cisloUcebna'];} ?>"></td>
     </tr>
 
 	<tr>
-    	<td>Budova:</td>
-	    <td><input type="text" size="20" name="budova"></td>
+    	<td><b>Budova:</b></td>
+	    <td><input type="text" size="20" name="budova" value="<?php if ($_SESSION['budovaUcebna'] != "") {echo $_SESSION['budovaUcebna'];} ?>"></td>
     </tr>
 
     <tr>
-    	<td>Kapacita:</td>
-	    <td><input type="text" size="20" name="kapacita"></td>
+    	<td><b>Kapacita:</b></td>
+	    <td><input type="text" size="20" name="kapacita" value="<?php if ($_SESSION['kapacitaUcebna'] != "") {echo $_SESSION['kapacitaUcebna'];} ?>"></td>
     </tr>
 
 	</table>
